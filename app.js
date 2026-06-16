@@ -479,6 +479,27 @@ function renderAchievements(){
 }
 function quickPlay(){ const active=games.filter(g=>g.active); const chosen=active[Math.floor(Math.random()*active.length)]; if(chosen) startGame(chosen.id); }
 async function shareRoomCode(gameId){ const code=$(`generatedCode-${gameId}`)?.value; if(!code) return; const text=t('roomInvite',{game:gameName(gameId),code}); try{ if(navigator.share) await navigator.share({title:'Partida Rápida', text}); else { await navigator.clipboard.writeText(text); showModal(t('inviteCopied'), text); } } catch { showModal(t('roomCode'), text); } }
+
+function installMobileOptimizations(){
+  const preventOnGame = (e) => {
+    if(e.target.closest && e.target.closest('.game-screen.active')) e.preventDefault();
+  };
+  ['touchmove','gesturestart','gesturechange','gestureend'].forEach(type => {
+    document.addEventListener(type, preventOnGame, { passive:false });
+  });
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', (e) => {
+    const now = Date.now();
+    if(now - lastTouchEnd <= 300 && e.target.closest && e.target.closest('button, canvas, .tic-cell, .game-screen.active')){
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, { passive:false });
+  document.querySelectorAll('canvas, .mobile-controls button, .snake-controls button, .tic-cell').forEach(el => {
+    el.addEventListener('pointerdown', ev => ev.preventDefault(), { passive:false });
+  });
+}
+
 function bindEvents(){
   $('loginTab').addEventListener('click',()=>switchTab('login')); $('registerTab').addEventListener('click',()=>switchTab('register'));
   const doLogin = async () => login($('loginUser').value,$('loginPin').value);
@@ -492,9 +513,10 @@ function bindEvents(){
   document.querySelectorAll('.backHome').forEach(b=>b.addEventListener('click',()=>{ closeModal(); stopAllGames(); enterHome(); })); $('pausePongBtn').addEventListener('click',()=>{ if(pong) pong.paused=!pong.paused; }); $('restartSnakeBtn').addEventListener('click',startSnake); $('restartTicBtn').addEventListener('click',newTicRound);
   window.addEventListener('keydown', e => { if(pong){ if(e.key==='ArrowUp') pong.keys.up=true; if(e.key==='ArrowDown') pong.keys.down=true; } if(snake){ if(e.key==='ArrowUp') changeSnakeDir('up'); if(e.key==='ArrowDown') changeSnakeDir('down'); if(e.key==='ArrowLeft') changeSnakeDir('left'); if(e.key==='ArrowRight') changeSnakeDir('right'); } });
   window.addEventListener('keyup', e => { if(!pong) return; if(e.key==='ArrowUp') pong.keys.up=false; if(e.key==='ArrowDown') pong.keys.down=false; });
-  $('pongCanvas').addEventListener('pointermove', e => { if(!pong) return; const rect=pong.canvas.getBoundingClientRect(); const y=((e.clientY-rect.top)/rect.height)*pong.canvas.height; pong.player.y=clamp(y-pong.player.h/2,0,pong.canvas.height-pong.player.h); });
-  const hold=(key,val)=>()=>{ if(pong) pong.keys[key]=val; }; $('upBtn').addEventListener('pointerdown',hold('up',true)); $('upBtn').addEventListener('pointerup',hold('up',false)); $('upBtn').addEventListener('pointerleave',hold('up',false)); $('downBtn').addEventListener('pointerdown',hold('down',true)); $('downBtn').addEventListener('pointerup',hold('down',false)); $('downBtn').addEventListener('pointerleave',hold('down',false));
-  document.querySelectorAll('.snake-controls button').forEach(b=>b.addEventListener('click',()=>changeSnakeDir(b.dataset.dir)));
+  $('pongCanvas').addEventListener('pointerdown', e => { if(e.cancelable) e.preventDefault(); if(!pong) return; const rect=pong.canvas.getBoundingClientRect(); const y=((e.clientY-rect.top)/rect.height)*pong.canvas.height; pong.player.y=clamp(y-pong.player.h/2,0,pong.canvas.height-pong.player.h); });
+  $('pongCanvas').addEventListener('pointermove', e => { if(e.cancelable) e.preventDefault(); if(!pong) return; const rect=pong.canvas.getBoundingClientRect(); const y=((e.clientY-rect.top)/rect.height)*pong.canvas.height; pong.player.y=clamp(y-pong.player.h/2,0,pong.canvas.height-pong.player.h); });
+  const hold=(key,val)=>(ev)=>{ if(ev && ev.cancelable) ev.preventDefault(); if(pong) pong.keys[key]=val; }; $('upBtn').addEventListener('pointerdown',hold('up',true)); $('upBtn').addEventListener('pointerup',hold('up',false)); $('upBtn').addEventListener('pointerleave',hold('up',false)); $('downBtn').addEventListener('pointerdown',hold('down',true)); $('downBtn').addEventListener('pointerup',hold('down',false)); $('downBtn').addEventListener('pointerleave',hold('down',false));
+  document.querySelectorAll('.snake-controls button').forEach(b=>{ b.addEventListener('pointerdown',(ev)=>{ if(ev.cancelable) ev.preventDefault(); changeSnakeDir(b.dataset.dir); }); });
 }
-function init(){ if(!cloudEnabled()) seedDemoRanking(); renderAvatarPicker(); bindEvents(); setLang(getJson(STORAGE_SETTINGS, {}).lang || 'es'); updateSoundButton(); const session=getJson(STORAGE_SESSION,null); if(session){ currentUser=session; if(!currentUser.avatar || currentUser.avatar === CPU_AVATAR) currentUser.avatar=avatars[0]; setLang(currentUser.lang || 'es'); enterHome(); } else { switchScreen('auth'); } }
+function init(){ installMobileOptimizations(); if(!cloudEnabled()) seedDemoRanking(); renderAvatarPicker(); bindEvents(); setLang(getJson(STORAGE_SETTINGS, {}).lang || 'es'); updateSoundButton(); const session=getJson(STORAGE_SESSION,null); if(session){ currentUser=session; if(!currentUser.avatar || currentUser.avatar === CPU_AVATAR) currentUser.avatar=avatars[0]; setLang(currentUser.lang || 'es'); enterHome(); } else { switchScreen('auth'); } }
 init();

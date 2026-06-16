@@ -29,3 +29,84 @@ select:focus, .language-select:focus{
 .top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .lang-toggle{background:#ffe59a;border-color:var(--line-strong);min-width:84px}
 @media(max-width:620px){.top-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.top-actions .ghost-btn{width:100%}.game-buttons{grid-template-columns:1fr 1fr 1fr}.lang-toggle{min-width:0}}
+
+
+/* V7.2 - Optimización móvil: evita zoom accidental, scroll durante juego y mejora controles táctiles */
+html{
+  min-height:100%;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+  overscroll-behavior:none;
+}
+body{
+  min-height:100%;
+  overscroll-behavior:none;
+  -webkit-tap-highlight-color:transparent;
+}
+button, input, select, textarea{
+  font-size:16px;
+}
+input, select, button, canvas, .tic-cell, .avatar-option{
+  touch-action:manipulation;
+}
+.game-screen,
+.game-layout,
+.canvas-wrap,
+canvas,
+.mobile-controls,
+.snake-controls,
+.tic-board{
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  overscroll-behavior:none;
+}
+.game-screen.active{
+  position:relative;
+  overflow:hidden;
+}
+.canvas-wrap{
+  max-width:100%;
+}
+canvas{
+  max-width:100%;
+  image-rendering:auto;
+}
+.mobile-controls button,
+.snake-controls button,
+.tic-cell,
+.game-buttons .ghost-btn,
+.top-actions .ghost-btn{
+  min-height:48px;
+}
+.mobile-controls button,
+.snake-controls button{
+  touch-action:none;
+}
+@media(max-width:620px){
+  body{ overflow-x:hidden; }
+  .app-shell{ padding-left:7px; padding-right:7px; }
+  .topbar{ padding:12px; }
+  .game-screen .topbar{ margin-bottom:8px; }
+  .game-layout{ width:100%; }
+  .scoreboard{ gap:7px; margin-bottom:8px; }
+  .scoreboard>div{ padding:9px; }
+  .scoreboard span{ font-size:1.3rem; }
+  .canvas-wrap{ padding:6px; border-radius:16px; }
+  .canvas-wrap canvas{ border-radius:10px; }
+  .mobile-controls{ gap:14px; margin-top:10px; }
+  .mobile-controls button{ width:min(42vw,150px); height:58px; font-size:1.45rem; }
+  .snake-controls{ grid-template-columns:repeat(3, minmax(64px, 82px)); gap:10px; margin-top:10px; }
+  .snake-controls button{ width:100%; height:58px; font-size:1.35rem; }
+  .tic-cell{ border-radius:16px; min-height:82px; }
+  .control-hint{ font-size:.88rem; margin:8px 0 0; }
+  .modal{ padding:12px; }
+}
+@media(max-width:390px){
+  .scoreboard{ font-size:.92rem; }
+  .scoreboard span{ font-size:1.15rem; }
+  .game-buttons{ gap:6px; }
+  .game-buttons .ghost-btn{ padding:10px 8px; font-size:.88rem; }
+  .tic-cell{ min-height:76px; }
+}
