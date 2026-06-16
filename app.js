@@ -680,6 +680,29 @@ function finishTicRoomFromState(st){
   setTimeout(()=>{ showResultModal(draw ? t('draw') : (won ? t('winDetail') : t('result')), msg, 'tictac-room'); }, 500);
 }
 
+
+function totalUserScores(){ return getJson(STORAGE_SCORES, []).filter(s=>s.user===currentUser?.user); }
+function profileLevel(totalPoints){ if(totalPoints >= 2500) return {level:5, name:t('legend')}; if(totalPoints >= 1200) return {level:4, name:t('master')}; if(totalPoints >= 600) return {level:3, name:t('fast')}; if(totalPoints >= 200) return {level:2, name:t('fan')}; return {level:1, name:t('novice')}; }
+function renderProfile(){
+  if(!currentUser) return;
+  const scores=totalUserScores(); const total=scores.reduce((sum,s)=>sum+(s.points||0),0); const lvl=profileLevel(total); const byGame={}; scores.forEach(s=>byGame[s.game]=(byGame[s.game]||0)+s.points); const best=Object.entries(byGame).sort((a,b)=>b[1]-a[1])[0];
+  $('profileName').textContent=currentUser.user; $('profileLevel').textContent=`${t('level')} ${lvl.level} · ${lvl.name}`; $('profileGames').textContent=scores.length; $('profilePoints').textContent=Math.round(total); $('profileBestGame').textContent=best ? gameName(best[0]) : '-'; $('profileStreak').textContent=currentUser.streak || 0; setVisibleAvatars(); updateGameLabels();
+}
+function updateStreak(result){
+  if(!currentUser) return; const positive = result === 'win' || result === 'draw' || result === 'score'; currentUser.streak = positive ? (currentUser.streak || 0) + 1 : 0;
+  const users=getJson(STORAGE_USERS, []); const idx=users.findIndex(u=>u.user===currentUser.user); if(idx>=0){ users[idx]={...users[idx], streak:currentUser.streak, avatar:avatarFor(currentUser)}; setJson(STORAGE_USERS, users); setJson(STORAGE_SESSION, currentUser); }
+  if(currentUser.streak >= 3) awardAchievement('streak_3');
+}
+function awardAchievement(id){
+  if(!currentUser) return; const ids=currentAchievementIds(); if(ids.includes(id)) return; ids.push(id); setCurrentAchievementIds(ids);
+  const ach=achievements.find(a=>a.id===id); if(ach){ setTimeout(()=>showModal(t('unlocked'), `${localize(ach.name)}: ${localize(ach.desc)}`), 160); playSound('win'); }
+}
+function renderAchievements(){
+  const ids=currentAchievementIds(); const box=$('achievementsList'); if(!box) return; $('achievementCount').textContent=`${ids.length}/${achievements.length}`; box.innerHTML='';
+  achievements.forEach(a=>{ const unlocked=ids.includes(a.id); const item=document.createElement('div'); item.className=`achievement ${unlocked?'unlocked':''}`; item.innerHTML=`<span>${unlocked?'🏆':'🔒'}</span><div><strong>${localize(a.name)}</strong><small>${localize(a.desc)}</small></div>`; box.appendChild(item); });
+}
+function quickPlay(){ const active=games.filter(g=>g.active); const chosen=active[Math.floor(Math.random()*active.length)]; if(chosen) startGame(chosen.id); }
+
 async function shareRoomCode(gameId){ const code=$(`generatedCode-${gameId}`)?.value; if(!code) return; const text=t('roomInvite',{game:gameName(gameId),code}); try{ if(navigator.share) await navigator.share({title:'Partida Rápida', text}); else { await navigator.clipboard.writeText(text); showModal(t('inviteCopied'), text); } } catch { showModal(t('roomCode'), text); } }
 
 function installMobileOptimizations(){
