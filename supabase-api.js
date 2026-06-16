@@ -99,6 +99,23 @@
     }));
   }
 
+
+  async function createRoom(sessionToken, game){
+    return first(await rpc('pr_create_room', { p_session_token: sessionToken, p_game: game }));
+  }
+
+  async function joinRoom(sessionToken, code, game){
+    return first(await rpc('pr_join_room', { p_session_token: sessionToken, p_code: code, p_game: game }));
+  }
+
+  async function getRoom(sessionToken, code){
+    return first(await rpc('pr_get_room', { p_session_token: sessionToken, p_code: code }));
+  }
+
+  async function updateRoomState(sessionToken, code, state, status){
+    return first(await rpc('pr_update_room_state', { p_session_token: sessionToken, p_code: code, p_state: state || {}, p_status: status || null }));
+  }
+
   window.PartidaRapidaSupabase = {
     enabled,
     registerPlayer,
@@ -109,6 +126,10 @@
     getMyStats,
     adminListPlayers,
     adminResetPin,
-    adminSetActive
+    adminSetActive,
+    createRoom,
+    joinRoom,
+    getRoom,
+    updateRoomState
   };
 })();

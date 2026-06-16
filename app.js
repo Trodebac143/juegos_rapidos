@@ -10,7 +10,7 @@ const avatars = ['🙂','😎','👾','🐍','🎮','🏓','⭐','🏆','🦊','
 let selectedAvatar = avatars[0];
 const badWords = ['puta','puto','mierda','gilipollas','cabron','cabrón','coño','joder','maricon','maricón','subnormal','imbecil','imbécil','polla','zorra','fuck','shit','bitch','asshole'];
 const games = [
-  { id:'pong', name:{es:'Pong',va:'Pong'}, icon:'PONG', art:'pong-art', desc:{es:'Reflejos contra CPU. La CPU mejora, pero también puede fallar.',va:'Reflexos contra CPU. La CPU millora, però també pot fallar.'}, active:true, modes:['cpu','room','join'], help:{es:'Pong suma puntos por aguantar en juego, golpear la pelota y marcar. La dificultad sube con el tiempo.',va:'Pong suma punts per aguantar en joc, colpejar la pilota i marcar. La dificultat puja amb el temps.'} },
+  { id:'pong', name:{es:'Pong',va:'Pong'}, icon:'PONG', art:'pong-art', desc:{es:'Reflejos contra CPU o sala. Gana quien llega antes a 5 puntos.',va:'Reflexos contra CPU o sala. Guanya qui arriba abans a 5 punts.'}, active:true, modes:['cpu','room','join'], help:{es:'Pong gana quien llega antes a 5 puntos. Contra CPU suma por aguantar, golpear y marcar.',va:'En Pong guanya qui arriba abans a 5 punts. Contra CPU suma per aguantar, colpejar i marcar.'} },
   { id:'snake', name:{es:'Serpiente',va:'Serp'}, icon:'🐍🍎', art:'snake-art', desc:{es:'Come manzanas, crece y aguanta cada vez con más velocidad.',va:'Menja pomes, creix i aguanta cada vegada amb més velocitat.'}, active:true, modes:['cpu'], help:{es:'Serpiente suma por tiempo y por manzanas. La velocidad aumenta progresivamente.',va:'Serp suma per temps i per pomes. La velocitat augmenta progressivament.'} },
   { id:'tictac', name:{es:'Tres en raya',va:'Tres en ratlla'}, icon:'❌⭕', art:'tictac-art', desc:{es:'El clásico de siempre contra una CPU que mejora por rondas.',va:'El clàssic de sempre contra una CPU que millora per rondes.'}, active:true, modes:['cpu','room','join'], help:{es:'Tres en raya puntúa por victoria, empate y rapidez. La CPU empieza fallona y mejora con cada ronda.',va:'Tres en ratlla puntua per victòria, empat i rapidesa. La CPU comença fallona i millora amb cada ronda.'} },
   { id:'connect4', name:{es:'Cuatro en raya',va:'Quatre en ratlla'}, icon:'🔴🟡', art:'connect-art', desc:{es:'Conecta cuatro fichas antes que tu rival.',va:'Connecta quatre fitxes abans que el teu rival.'}, active:false, modes:[], help:{es:'Ranking pendiente.',va:'Rànquing pendent.'} },
@@ -37,6 +37,8 @@ let soundEnabled = getJson(STORAGE_SETTINGS, { sound:false }).sound === true;
 let pong = null;
 let snake = null;
 let tic = null;
+let roomPollTimer = null;
+let pongRoomSyncTimer = null;
 
 let uiLang = 'es';
 let pendingModalAction = null;
@@ -59,10 +61,10 @@ function normalizeCloudPlayer(player){
 function cloudSessionToken(){ return currentUser?.sessionToken || currentUser?.session_token || null; }
 const i18n = {
   es:{
-    loginTab:'Entrar', registerTab:'Nuevo jugador', user:'Usuario', newUser:'Nuevo usuario', pin:'Contraseña', lang:'Idioma', langToggle:'CAS/VAL', enter:'Entrar', createPlayer:'Crear jugador', chooseAvatar:'Elige tu avatar', authHint:'Si ya tienes jugador, entra con tu usuario y PIN de 4 cifras.', registerHint:'El PIN se guarda protegido en Supabase y no se muestra en claro.', brandOverline:'Juegos de siempre', brandText:'Entra, elige un juego clásico y echa una partida corta en cualquier momento.', badge1:'Sin instalación', badge2:'PIN de 4 cifras', badge3:'Ranking', mainScreen:'Pantalla principal', hello:'Hola', logout:'Salir', heroTitle:'¿Echamos una partida?', heroText:'Pong, Serpiente y Tres en raya están activos. En breve más juegos…', quickPlay:'🎮 Jugar ahora', sound:'Sonido', off:'OFF', on:'ON', player:'Jugador', games:'Juegos disponibles', quickGames:'Partidas rápidas', rankingByGame:'Ranking por juego', top10:'Top 10', weekly:'Semanal', all:'Histórico', achievements:'Logros', gamesCount:'Partidas', points:'Puntos', bestGame:'Mejor juego', streak:'Racha', level:'Nivel', novice:'Novato', fan:'Aficionado', fast:'Rápido', master:'Maestro', legend:'Leyenda', cpu:'CPU', playCpu:'Jugar contra CPU', createRoom:'Crear sala', enterCode:'Introducir código', roomCode:'Código de sala', enterRoom:'Entrar en sala', coming:'🔒 Próximamente', soon:'En breve más juegos…', noGames:'Sin partidas', thisWeek:'Esta semana', historical:'Histórico', scoreSystem:'Sistema de puntos', rankingPending:'Ranking pendiente.', pongOver:'Pong contra CPU', pongTitle:'{player} vs CPU', pause:'Pausa', back:'Volver', difficulty:'Dificultad', fail:'FALLO', point:'PUNTO', paused:'PAUSA', snakeOver:'Serpiente', snakeTitle:'Come, crece y aguanta', restart:'Reiniciar', speed:'Velocidad', length:'Longitud', pongHint:'PC: ratón o teclas ↑ ↓. Móvil: botones inferiores o tocar la pantalla.', snakeHint:'PC: flechas. Móvil: botones. La velocidad aumenta cuanto más aguantas.', ticOver:'Tres en raya contra CPU', ticTitle:'Jugador ❌ vs CPU ⭕', newRound:'Nueva ronda', rounds:'Rondas', yourTurn:'Te toca. Elige una casilla.', cpuThinking:'Piensa la CPU...', ticHint:'La CPU mejora con las rondas, pero en niveles bajos también puede fallar.', result:'Resultado', accept:'Aceptar', newGame:'Partida nueva', menu:'Salir al menú principal', lostMaster:'Has perdido. Se te asignan 2 puntos de consolación.', wonMaster:'Has ganado. ¡Enhorabuena!', totalSaved:'Total guardado: {points} puntos.', roomCreated:'Sala creada por {user}. Comparte este código:', copy:'Copiar', share:'Compartir', roomReal:'La sala real online se conectará con Supabase Realtime en la siguiente fase.', roomNotFound:'Sala no encontrada', roomNotFoundText:'Comprueba el código. En esta versión la sala queda simulada localmente.', ownCode:'Código propio', ownCodeText:'Has introducido el código de tu propia sala. Pásaselo a otro usuario.', playerJoined:'Jugador unido', playerJoinedText:'Te has unido a la sala {code}. La partida online real se conectará después.', codeCopied:'Código copiado', inviteCopied:'Invitación copiada', roomInvite:'Únete a mi sala de {game} en Partida Rápida. Código: {code}', invalidLogin:'Usuario o contraseña incorrectos.', userExists:'Ese usuario ya existe. Elige otro.', userLength:'El usuario debe tener entre 3 y 18 caracteres.', userChars:'Usa solo letras, números, guion o guion bajo. Sin espacios.', userBad:'Ese nombre de usuario no está permitido.', pinBad:'La contraseña debe ser un número de 4 cifras.', unlocked:'Logro desbloqueado', consolationDetail:'Consolación', winDetail:'Victoria', draw:'Empate', drawText:'Empate. Se guarda la puntuación y puedes jugar otra ronda.', cpuAvatar:'Avatar exclusivo de la CPU'
+    loginTab:'Entrar', registerTab:'Nuevo jugador', user:'Usuario', newUser:'Nuevo usuario', pin:'Contraseña', lang:'Idioma', langToggle:'CAS/VAL', enter:'Entrar', createPlayer:'Crear jugador', chooseAvatar:'Elige tu avatar', authHint:'Si ya tienes jugador, entra con tu usuario y PIN de 4 cifras.', registerHint:'El PIN se guarda protegido en Supabase y no se muestra en claro.', brandOverline:'Juegos de siempre', brandText:'Entra, elige un juego clásico y echa una partida corta en cualquier momento.', badge1:'Sin instalación', badge2:'PIN de 4 cifras', badge3:'Ranking', mainScreen:'Pantalla principal', hello:'Hola', logout:'Salir', heroTitle:'¿Echamos una partida?', heroText:'Pong, Serpiente y Tres en raya están activos. En breve más juegos…', quickPlay:'🎮 Jugar ahora', sound:'Sonido', off:'OFF', on:'ON', player:'Jugador', games:'Juegos disponibles', quickGames:'Partidas rápidas', rankingByGame:'Ranking por juego', top10:'Top 10', weekly:'Semanal', all:'Histórico', achievements:'Logros', gamesCount:'Partidas', points:'Puntos', bestGame:'Mejor juego', streak:'Racha', level:'Nivel', novice:'Novato', fan:'Aficionado', fast:'Rápido', master:'Maestro', legend:'Leyenda', cpu:'CPU', playCpu:'Jugar contra CPU', createRoom:'Crear sala', enterCode:'Introducir código', roomCode:'Código de sala', enterRoom:'Entrar en sala', coming:'🔒 Próximamente', soon:'En breve más juegos…', noGames:'Sin partidas', thisWeek:'Esta semana', historical:'Histórico', scoreSystem:'Sistema de puntos', rankingPending:'Ranking pendiente.', pongOver:'Pong contra CPU', pongTitle:'{player} vs CPU', pause:'Pausa', back:'Volver', difficulty:'Dificultad', fail:'FALLO', point:'PUNTO', paused:'PAUSA', snakeOver:'Serpiente', snakeTitle:'Come, crece y aguanta', restart:'Reiniciar', speed:'Velocidad', length:'Longitud', pongHint:'Gana quien llega antes a 5 puntos. PC: ratón o teclas ↑ ↓. Móvil: botones inferiores o tocar la pantalla.', snakeHint:'PC: flechas. Móvil: botones. La velocidad aumenta cuanto más aguantas.', ticOver:'Tres en raya contra CPU', ticTitle:'Jugador ❌ vs CPU ⭕', newRound:'Nueva ronda', rounds:'Rondas', yourTurn:'Te toca. Elige una casilla.', cpuThinking:'Piensa la CPU...', ticHint:'La CPU mejora con las rondas, pero en niveles bajos también puede fallar.', result:'Resultado', accept:'Aceptar', newGame:'Partida nueva', menu:'Salir al menú principal', lostMaster:'Has perdido. Se te asignan 2 puntos de consolación.', wonMaster:'Has ganado. ¡Enhorabuena!', totalSaved:'Total guardado: {points} puntos.', roomCreated:'Sala creada por {user}. Comparte este código:', copy:'Copiar', share:'Compartir', roomReal:'La sala real online se conectará con Supabase Realtime en la siguiente fase.', roomNotFound:'Sala no encontrada', roomNotFoundText:'Comprueba el código. En esta versión la sala queda simulada localmente.', ownCode:'Código propio', ownCodeText:'Has introducido el código de tu propia sala. Pásaselo a otro usuario.', playerJoined:'Jugador unido', playerJoinedText:'Te has unido a la sala {code}. La partida online real se conectará después.', codeCopied:'Código copiado', inviteCopied:'Invitación copiada', roomInvite:'Únete a mi sala de {game} en Partida Rápida. Código: {code}', invalidLogin:'Usuario o contraseña incorrectos.', userExists:'Ese usuario ya existe. Elige otro.', userLength:'El usuario debe tener entre 3 y 18 caracteres.', userChars:'Usa solo letras, números, guion o guion bajo. Sin espacios.', userBad:'Ese nombre de usuario no está permitido.', pinBad:'La contraseña debe ser un número de 4 cifras.', unlocked:'Logro desbloqueado', consolationDetail:'Consolación', winDetail:'Victoria', draw:'Empate', drawText:'Empate. Se guarda la puntuación y puedes jugar otra ronda.', cpuAvatar:'Avatar exclusivo de la CPU', firstTo5:'Gana quien llega antes a 5 puntos', waitingGuest:'Esperando a otro jugador…', roomPlayerJoined:'Jugador conectado. La partida de Pong empieza ahora.', roomOnline:'Sala online experimental con Supabase. Mantén esta pantalla abierta hasta que se una otro jugador.', onlineRoom:'Sala online', host:'Anfitrión', guest:'Invitado', connected:'Conectado', syncWarning:'Modo online experimental: puede ir algo menos fluido que contra CPU.', roomWin:'Has ganado la sala de Pong.', roomLoss:'Has perdido la sala de Pong. Se te asignan 2 puntos de consolación.'
   },
   va:{
-    loginTab:'Entrar', registerTab:'Nou jugador', user:'Usuari', newUser:'Nou usuari', pin:'Contrasenya', lang:'Idioma', langToggle:'CAS/VAL', enter:'Entrar', createPlayer:'Crear jugador', chooseAvatar:'Tria el teu avatar', authHint:'Si ja tens jugador, entra amb el teu usuari i PIN de 4 xifres.', registerHint:'El PIN es guarda protegit en Supabase i no es mostra en clar.', brandOverline:'Jocs de sempre', brandText:'Entra, tria un joc clàssic i juga una partida curta en qualsevol moment.', badge1:'Sense instal·lació', badge2:'PIN de 4 xifres', badge3:'Rànquing', mainScreen:'Pantalla principal', hello:'Hola', logout:'Eixir', heroTitle:'Fem una partida?', heroText:'Pong, Serp i Tres en ratlla estan actius. En breu més jocs…', quickPlay:'🎮 Jugar ara', sound:'So', off:'OFF', on:'ON', player:'Jugador', games:'Jocs disponibles', quickGames:'Partides ràpides', rankingByGame:'Rànquing per joc', top10:'Top 10', weekly:'Setmanal', all:'Històric', achievements:'Assoliments', gamesCount:'Partides', points:'Punts', bestGame:'Millor joc', streak:'Ratxa', level:'Nivell', novice:'Novell', fan:'Aficionat', fast:'Ràpid', master:'Mestre', legend:'Llegenda', cpu:'CPU', playCpu:'Jugar contra CPU', createRoom:'Crear sala', enterCode:'Introduir codi', roomCode:'Codi de sala', enterRoom:'Entrar en sala', coming:'🔒 Pròximament', soon:'En breu més jocs…', noGames:'Sense partides', thisWeek:'Esta setmana', historical:'Històric', scoreSystem:'Sistema de punts', rankingPending:'Rànquing pendent.', pongOver:'Pong contra CPU', pongTitle:'{player} contra CPU', pause:'Pausa', back:'Tornar', difficulty:'Dificultat', fail:'FALLADA', point:'PUNT', paused:'PAUSA', snakeOver:'Serp', snakeTitle:'Menja, creix i aguanta', restart:'Reiniciar', speed:'Velocitat', length:'Longitud', pongHint:'PC: ratolí o tecles ↑ ↓. Mòbil: botons inferiors o tocar la pantalla.', snakeHint:'PC: fletxes. Mòbil: botons. La velocitat augmenta com més aguantes.', ticOver:'Tres en ratlla contra CPU', ticTitle:'Jugador ❌ contra CPU ⭕', newRound:'Nova ronda', rounds:'Rondes', yourTurn:'Et toca. Tria una casella.', cpuThinking:'La CPU pensa...', ticHint:'La CPU millora amb les rondes, però en nivells baixos també pot fallar.', result:'Resultat', accept:'Acceptar', newGame:'Partida nova', menu:'Eixir al menú principal', lostMaster:'Has perdut. Se t’assignen 2 punts de consolació.', wonMaster:'Has guanyat. Enhorabona!', totalSaved:'Total guardat: {points} punts.', roomCreated:'Sala creada per {user}. Compartix este codi:', copy:'Copiar', share:'Compartir', roomReal:'La sala real en línia es connectarà amb Supabase Realtime en la fase següent.', roomNotFound:'Sala no trobada', roomNotFoundText:'Comprova el codi. En esta versió la sala queda simulada localment.', ownCode:'Codi propi', ownCodeText:'Has introduït el codi de la teua pròpia sala. Passa-li’l a un altre usuari.', playerJoined:'Jugador unit', playerJoinedText:'T’has unit a la sala {code}. La partida en línia real es connectarà després.', codeCopied:'Codi copiat', inviteCopied:'Invitació copiada', roomInvite:'Unix-te a la meua sala de {game} en Partida Rápida. Codi: {code}', invalidLogin:'Usuari o contrasenya incorrectes.', userExists:'Eixe usuari ja existix. Tria’n un altre.', userLength:'L’usuari ha de tindre entre 3 i 18 caràcters.', userChars:'Usa només lletres, números, guionet o guionet baix. Sense espais.', userBad:'Eixe nom d’usuari no està permés.', pinBad:'La contrasenya ha de ser un número de 4 xifres.', unlocked:'Assoliment desbloquejat', consolationDetail:'Consolació', winDetail:'Victòria', draw:'Empat', drawText:'Empat. Es guarda la puntuació i pots jugar una altra ronda.', cpuAvatar:'Avatar exclusiu de la CPU'
+    loginTab:'Entrar', registerTab:'Nou jugador', user:'Usuari', newUser:'Nou usuari', pin:'Contrasenya', lang:'Idioma', langToggle:'CAS/VAL', enter:'Entrar', createPlayer:'Crear jugador', chooseAvatar:'Tria el teu avatar', authHint:'Si ja tens jugador, entra amb el teu usuari i PIN de 4 xifres.', registerHint:'El PIN es guarda protegit en Supabase i no es mostra en clar.', brandOverline:'Jocs de sempre', brandText:'Entra, tria un joc clàssic i juga una partida curta en qualsevol moment.', badge1:'Sense instal·lació', badge2:'PIN de 4 xifres', badge3:'Rànquing', mainScreen:'Pantalla principal', hello:'Hola', logout:'Eixir', heroTitle:'Fem una partida?', heroText:'Pong, Serp i Tres en ratlla estan actius. En breu més jocs…', quickPlay:'🎮 Jugar ara', sound:'So', off:'OFF', on:'ON', player:'Jugador', games:'Jocs disponibles', quickGames:'Partides ràpides', rankingByGame:'Rànquing per joc', top10:'Top 10', weekly:'Setmanal', all:'Històric', achievements:'Assoliments', gamesCount:'Partides', points:'Punts', bestGame:'Millor joc', streak:'Ratxa', level:'Nivell', novice:'Novell', fan:'Aficionat', fast:'Ràpid', master:'Mestre', legend:'Llegenda', cpu:'CPU', playCpu:'Jugar contra CPU', createRoom:'Crear sala', enterCode:'Introduir codi', roomCode:'Codi de sala', enterRoom:'Entrar en sala', coming:'🔒 Pròximament', soon:'En breu més jocs…', noGames:'Sense partides', thisWeek:'Esta setmana', historical:'Històric', scoreSystem:'Sistema de punts', rankingPending:'Rànquing pendent.', pongOver:'Pong contra CPU', pongTitle:'{player} contra CPU', pause:'Pausa', back:'Tornar', difficulty:'Dificultat', fail:'FALLADA', point:'PUNT', paused:'PAUSA', snakeOver:'Serp', snakeTitle:'Menja, creix i aguanta', restart:'Reiniciar', speed:'Velocitat', length:'Longitud', pongHint:'Guanya qui arriba abans a 5 punts. PC: ratolí o tecles ↑ ↓. Mòbil: botons inferiors o tocar la pantalla.', snakeHint:'PC: fletxes. Mòbil: botons. La velocitat augmenta com més aguantes.', ticOver:'Tres en ratlla contra CPU', ticTitle:'Jugador ❌ contra CPU ⭕', newRound:'Nova ronda', rounds:'Rondes', yourTurn:'Et toca. Tria una casella.', cpuThinking:'La CPU pensa...', ticHint:'La CPU millora amb les rondes, però en nivells baixos també pot fallar.', result:'Resultat', accept:'Acceptar', newGame:'Partida nova', menu:'Eixir al menú principal', lostMaster:'Has perdut. Se t’assignen 2 punts de consolació.', wonMaster:'Has guanyat. Enhorabona!', totalSaved:'Total guardat: {points} punts.', roomCreated:'Sala creada per {user}. Compartix este codi:', copy:'Copiar', share:'Compartir', roomReal:'La sala real en línia es connectarà amb Supabase Realtime en la fase següent.', roomNotFound:'Sala no trobada', roomNotFoundText:'Comprova el codi. En esta versió la sala queda simulada localment.', ownCode:'Codi propi', ownCodeText:'Has introduït el codi de la teua pròpia sala. Passa-li’l a un altre usuari.', playerJoined:'Jugador unit', playerJoinedText:'T’has unit a la sala {code}. La partida en línia real es connectarà després.', codeCopied:'Codi copiat', inviteCopied:'Invitació copiada', roomInvite:'Unix-te a la meua sala de {game} en Partida Rápida. Codi: {code}', invalidLogin:'Usuari o contrasenya incorrectes.', userExists:'Eixe usuari ja existix. Tria’n un altre.', userLength:'L’usuari ha de tindre entre 3 i 18 caràcters.', userChars:'Usa només lletres, números, guionet o guionet baix. Sense espais.', userBad:'Eixe nom d’usuari no està permés.', pinBad:'La contrasenya ha de ser un número de 4 xifres.', unlocked:'Assoliment desbloquejat', consolationDetail:'Consolació', winDetail:'Victòria', draw:'Empat', drawText:'Empat. Es guarda la puntuació i pots jugar una altra ronda.', cpuAvatar:'Avatar exclusiu de la CPU', firstTo5:'Guanya qui arriba abans a 5 punts', waitingGuest:'Esperant un altre jugador…', roomPlayerJoined:'Jugador connectat. La partida de Pong comença ara.', roomOnline:'Sala en línia experimental amb Supabase. Mantín esta pantalla oberta fins que s’unisca un altre jugador.', onlineRoom:'Sala en línia', host:'Amfitrió', guest:'Convidat', connected:'Connectat', syncWarning:'Mode en línia experimental: pot anar un poc menys fluid que contra CPU.', roomWin:'Has guanyat la sala de Pong.', roomLoss:'Has perdut la sala de Pong. Se t’assignen 2 punts de consolació.'
   }
 };
 function t(key, vars={}){ let txt=(i18n[uiLang]&&i18n[uiLang][key]) || i18n.es[key] || key; Object.entries(vars).forEach(([k,v])=>{ txt=txt.replaceAll(`{${k}}`, v); }); return txt; }
@@ -302,7 +304,22 @@ function enterHome(){
 }
 function logout(){ currentUser = null; localStorage.removeItem(STORAGE_SESSION); stopAllGames(); switchScreen('auth'); }
 function randomCode(){ const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let code=''; for(let i=0;i<5;i++) code += alphabet[Math.floor(Math.random()*alphabet.length)]; return code; }
-function createRoom(gameId){
+async function createRoom(gameId){
+  if(gameId === 'pong' && cloudEnabled() && cloudSessionToken()){
+    try{
+      const row = await window.PartidaRapidaSupabase.createRoom(cloudSessionToken(), 'pong');
+      if(!row?.ok) return showModal(t('roomNotFound'), row?.message || t('roomNotFoundText'));
+      awardAchievement('room_created'); renderAchievements();
+      const code = row.code;
+      const box = $(`roomBox-${gameId}`);
+      box.innerHTML = `<p>${t('roomCreated',{user:escapeHtml(currentUser.user)})}</p><div class="copy-row"><input id="generatedCode-${gameId}" readonly value="${code}" /><button class="mini-btn" type="button" data-action="copy" data-game="${gameId}">${t('copy')}</button><button class="mini-btn" type="button" data-action="share" data-game="${gameId}">${t('share')}</button></div><p class="hint"><strong>${t('waitingGuest')}</strong><br>${t('roomOnline')}</p>`;
+      box.classList.remove('hidden'); const joinBox=$(`joinBox-${gameId}`); if(joinBox) joinBox.classList.add('hidden');
+      waitForPongGuest(code);
+      return;
+    }catch(err){
+      console.warn('No se pudo crear sala online. Se usa sala local simulada.', err);
+    }
+  }
   const code = randomCode();
   const rooms = getJson(STORAGE_ROOMS, []);
   rooms.push({code, game:gameId, host:currentUser.user, avatar:avatarFor(currentUser), status:'waiting', createdAt:nowIso()});
@@ -311,8 +328,36 @@ function createRoom(gameId){
   box.innerHTML = `<p>${t('roomCreated',{user:escapeHtml(currentUser.user)})}</p><div class="copy-row"><input id="generatedCode-${gameId}" readonly value="${code}" /><button class="mini-btn" type="button" data-action="copy" data-game="${gameId}">${t('copy')}</button><button class="mini-btn" type="button" data-action="share" data-game="${gameId}">${t('share')}</button></div><p class="hint">${t('roomReal')}</p>`;
   box.classList.remove('hidden'); const joinBox=$(`joinBox-${gameId}`); if(joinBox) joinBox.classList.add('hidden'); renderAchievements();
 }
-function joinRoom(gameId){
+async function waitForPongGuest(code){
+  clearRoomPoll();
+  roomPollTimer = setInterval(async () => {
+    if(!currentUser || !cloudEnabled()) return clearRoomPoll();
+    try{
+      const room = await window.PartidaRapidaSupabase.getRoom(cloudSessionToken(), code);
+      if(room?.ok && room.status === 'playing' && room.guest_username){
+        clearRoomPoll();
+        showModal(t('connected'), t('roomPlayerJoined'));
+        setTimeout(()=>{ closeModal(); startPongRoom(room, 'host'); }, 750);
+      }
+    }catch(err){ console.warn('No se pudo consultar sala.', err); }
+  }, 1800);
+}
+function clearRoomPoll(){ if(roomPollTimer){ clearInterval(roomPollTimer); roomPollTimer = null; } }
+function clearPongRoomSync(){ if(pongRoomSyncTimer){ clearInterval(pongRoomSyncTimer); pongRoomSyncTimer = null; } }
+async function joinRoom(gameId){
   const code = $(`joinCode-${gameId}`).value.trim().toUpperCase();
+  if(gameId === 'pong' && cloudEnabled() && cloudSessionToken()){
+    try{
+      const room = await window.PartidaRapidaSupabase.joinRoom(cloudSessionToken(), code, 'pong');
+      if(!room?.ok) return showModal(t('roomNotFound'), room?.message || t('roomNotFoundText'));
+      awardAchievement('room_joined'); renderAchievements();
+      showModal(t('playerJoined'), t('playerJoinedText',{code}));
+      setTimeout(()=>{ closeModal(); startPongRoom(room, 'guest'); }, 750);
+      return;
+    }catch(err){
+      console.warn('No se pudo unir a sala online. Se intenta sala local.', err);
+    }
+  }
   const rooms = getJson(STORAGE_ROOMS, []);
   const room = rooms.find(r => r.code === code && r.game === gameId);
   if(!room) return showModal(t('roomNotFound'), t('roomNotFoundText'));
@@ -337,13 +382,22 @@ function modalNewGame(){ const gameId=pendingModalAction; closeModal(); if(gameI
 function modalMenu(){ closeModal(); stopAllGames(); enterHome(); }
 function updateGameLabels(){
   const set=(id,txt)=>{const el=$(id); if(el) el.textContent=txt;};
-  set('pongLevelLabel', t('difficulty')); set('pongCpuSmall', t('cpu')); set('pongPlayerSmall', t('player'));
+  set('pongLevelLabel', t('difficulty'));
+  if(pong && pong.mode === 'room'){
+    set('pongOverline', t('onlineRoom'));
+    set('pongPlayerSmall', currentUser?.user || t('player'));
+    set('pongCpuSmall', pong.opponentName || t('guest'));
+    const title=$('pongTitle'); if(title) title.textContent = `${currentUser?.user || t('player')} vs ${pong.opponentName || t('guest')}`;
+  } else {
+    set('pongOverline', t('pongOver'));
+    set('pongCpuSmall', t('cpu')); set('pongPlayerSmall', t('player'));
+    const title=$('pongTitle'); if(title) title.textContent = t('pongTitle',{player:currentUser?.user || t('player')});
+  }
   set('snakeLevelLabel', t('speed')); set('snakeLengthLabel', t('length')); set('snakeScoreSmall', t('points'));
   set('ticLevelLabel', t('difficulty')); set('ticRoundsLabel', t('rounds')); set('ticPointsSmall', t('points'));
-  const title=$('pongTitle'); if(title) title.textContent = t('pongTitle',{player:currentUser?.user || t('player')});
 }
 function startGame(gameId){ if(gameId==='pong') startPong(); if(gameId==='snake') startSnake(); if(gameId==='tictac') startTicTac(); }
-function stopAllGames(){ stopPong(); stopSnake(); stopTicTac(); }
+function stopAllGames(){ clearRoomPoll(); clearPongRoomSync(); stopPong(); stopSnake(); stopTicTac(); }
 function flash(id, text){
   const el = $(id); el.textContent = text; el.classList.remove('hidden'); void el.offsetWidth; el.classList.add('hidden');
   setTimeout(()=>el.classList.remove('hidden'), 10); setTimeout(()=>el.classList.add('hidden'), 620);
@@ -365,19 +419,35 @@ function updateSoundButton(){ const btn=$('soundToggleBtn'); if(btn) btn.textCon
 function toggleSound(){ soundEnabled=!soundEnabled; setJson(STORAGE_SETTINGS,{sound:soundEnabled}); updateSoundButton(); playSound('click'); }
 
 // PONG
-function startPong(){ stopAllGames(); setVisibleAvatars(); switchScreen('pong'); initPong(); }
-function initPong(){
-  const canvas=$('pongCanvas'), ctx=canvas.getContext('2d');
-  pong={canvas,ctx,running:true,paused:false,keys:{up:false,down:false},player:{x:26,y:160,w:12,h:92,score:0},cpu:{x:canvas.width-38,y:160,w:12,h:92,score:0,miss:0},ball:{x:canvas.width/2,y:canvas.height/2,r:8,vx:4.2,vy:2.6},points:0,level:1,last:performance.now(),start:performance.now()};
-  updatePongHud(); requestAnimationFrame(pongLoop);
+function startPong(){ stopAllGames(); setVisibleAvatars(); switchScreen('pong'); initPong('cpu'); }
+function startPongRoom(room, role){
+  stopAllGames(); setVisibleAvatars(); switchScreen('pong'); initPong('room', room, role);
 }
-function stopPong(){ if(pong) pong.running=false; pong=null; }
-function pongLoop(now){ if(!pong || !pong.running) return; const dt=Math.min(32, now-pong.last)/16.67; pong.last=now; if(!pong.paused) updatePong(dt); drawPong(); requestAnimationFrame(pongLoop); }
+function initPong(mode='cpu', room=null, role='host'){
+  const canvas=$('pongCanvas'), ctx=canvas.getContext('2d');
+  const isRoom = mode === 'room';
+  const opponentName = isRoom ? (role === 'host' ? room.guest_username : room.host_username) : t('cpu');
+  pong={canvas,ctx,running:true,paused:false,finished:false,mode,role,roomCode:room?.code||'',opponentName:opponentName||t('guest'),lastSync:0,keys:{up:false,down:false},player:{x:26,y:160,w:12,h:92,score:0},cpu:{x:canvas.width-38,y:160,w:12,h:92,score:0,miss:0},ball:{x:canvas.width/2,y:canvas.height/2,r:8,vx:4.2,vy:2.6},points:0,level:1,last:performance.now(),start:performance.now()};
+  if(isRoom && role === 'guest'){
+    pong.player.x = canvas.width-38;
+    pong.cpu.x = 26;
+  }
+  updatePongHud();
+  if(isRoom) startPongRoomSync();
+  requestAnimationFrame(pongLoop);
+}
+function stopPong(){ if(pong) pong.running=false; clearPongRoomSync(); pong=null; }
+function pongLoop(now){ if(!pong || !pong.running) return; const dt=Math.min(32, now-pong.last)/16.67; pong.last=now; if(!pong.paused){ if(pong.mode==='room') updatePongRoom(dt); else updatePong(dt); } drawPong(); requestAnimationFrame(pongLoop); }
+function controlLocalPaddle(dt){
+  if(!pong) return;
+  const paddle = pong.mode === 'room' && pong.role === 'guest' ? pong.player : pong.player;
+  const move=6.8*dt; if(pong.keys.up) paddle.y-=move; if(pong.keys.down) paddle.y+=move; paddle.y=clamp(paddle.y,0,pong.canvas.height-paddle.h);
+}
 function updatePong(dt){
   const {canvas,player,cpu,ball}=pong; const elapsed=(performance.now()-pong.start)/1000;
   pong.level = 1 + Math.floor(elapsed/18) + Math.floor(pong.points/160);
   pong.points += 0.055 * pong.level * dt;
-  const move=6.8*dt; if(pong.keys.up) player.y-=move; if(pong.keys.down) player.y+=move; player.y=clamp(player.y,0,canvas.height-player.h);
+  controlLocalPaddle(dt);
   const cpuCenter=cpu.y+cpu.h/2, ballCenter=ball.y; const cpuSpeed=clamp(2.8+pong.level*.42,3,7.6)*dt;
   const mistakeChance=clamp(0.26 - pong.level*0.018, 0.06, 0.26);
   if(Math.random()<0.012) cpu.miss = Math.random()<mistakeChance ? 38 + Math.random()*78 : 0;
@@ -390,6 +460,72 @@ function updatePong(dt){
   if(ball.x > canvas.width+ball.r){ player.score++; pong.points+=80; flash('pongFlash',t('point')); resetPongBall(-1); }
   if(player.score>=5 || cpu.score>=5) return finishPong(); updatePongHud();
 }
+function updatePongRoom(dt){
+  const {canvas,player,cpu,ball}=pong;
+  controlLocalPaddle(dt);
+  if(pong.role !== 'host') return updatePongHud();
+  const elapsed=(performance.now()-pong.start)/1000;
+  pong.level = 1 + Math.floor(elapsed/22);
+  pong.points += 0.035 * pong.level * dt;
+  ball.x += ball.vx*dt; ball.y += ball.vy*dt;
+  if(ball.y<ball.r || ball.y>canvas.height-ball.r){ ball.vy*=-1; playSound('point'); }
+  if(hitPaddle(ball,player) && ball.vx<0){ ball.vx=Math.abs(ball.vx)+0.14; addPongAngle(ball,player); pong.points+=10; playSound('point'); }
+  if(hitPaddle(ball,cpu) && ball.vx>0){ ball.vx=-Math.abs(ball.vx)-0.14; addPongAngle(ball,cpu); playSound('point'); }
+  if(ball.x < -ball.r){ cpu.score++; flash('pongFlash',t('fail')); resetPongBall(1); }
+  if(ball.x > canvas.width+ball.r){ player.score++; pong.points+=70; flash('pongFlash',t('point')); resetPongBall(-1); }
+  if(player.score>=5 || cpu.score>=5) return finishPongRoom(player.score>=5 ? 'host' : 'guest');
+  updatePongHud();
+}
+function startPongRoomSync(){
+  clearPongRoomSync();
+  pongRoomSyncTimer = setInterval(syncPongRoom, 180);
+}
+async function syncPongRoom(){
+  if(!pong || pong.mode !== 'room' || !cloudEnabled() || !cloudSessionToken() || pong.finished) return;
+  try{
+    if(pong.role === 'host'){
+      const room = await window.PartidaRapidaSupabase.getRoom(cloudSessionToken(), pong.roomCode);
+      const st = room?.state || {};
+      if(typeof st.guestY === 'number') pong.cpu.y = clamp(st.guestY,0,pong.canvas.height-pong.cpu.h);
+      const state = {
+        status:'playing', target:5, hostY:pong.player.y, guestY:pong.cpu.y,
+        ball:{x:pong.ball.x,y:pong.ball.y,vx:pong.ball.vx,vy:pong.ball.vy},
+        hostScore:pong.player.score, guestScore:pong.cpu.score, level:pong.level
+      };
+      await window.PartidaRapidaSupabase.updateRoomState(cloudSessionToken(), pong.roomCode, state, 'playing');
+    } else {
+      const room = await window.PartidaRapidaSupabase.getRoom(cloudSessionToken(), pong.roomCode);
+      const st = room?.state || {};
+      if(st.status === 'ended') return finishPongRoom(st.winnerRole || 'host', st);
+      if(st.ball){ pong.ball.x=Number(st.ball.x)||pong.ball.x; pong.ball.y=Number(st.ball.y)||pong.ball.y; pong.ball.vx=Number(st.ball.vx)||pong.ball.vx; pong.ball.vy=Number(st.ball.vy)||pong.ball.vy; }
+      if(typeof st.hostY === 'number') pong.cpu.y = clamp(st.hostY,0,pong.canvas.height-pong.cpu.h);
+      if(typeof st.hostScore === 'number') pong.cpu.score = st.hostScore;
+      if(typeof st.guestScore === 'number') pong.player.score = st.guestScore;
+      pong.level = Number(st.level)||pong.level;
+      await window.PartidaRapidaSupabase.updateRoomState(cloudSessionToken(), pong.roomCode, {guestY:pong.player.y}, 'playing');
+      updatePongHud();
+    }
+  }catch(err){ console.warn('Error sincronizando Pong online.', err); }
+}
+async function finishPongRoom(winnerRole, remoteState=null){
+  if(!pong || pong.finished) return;
+  pong.finished = true;
+  const won = winnerRole === pong.role;
+  const hostScore = pong.role === 'host' ? pong.player.score : pong.cpu.score;
+  const guestScore = pong.role === 'guest' ? pong.player.score : pong.cpu.score;
+  const points = won ? Math.round((pong.points || 0) + 160) : 2;
+  if(pong.role === 'host' && !remoteState && cloudEnabled()){
+    try{
+      const state = {status:'ended', winnerRole, target:5, hostY:pong.player.y, guestY:pong.cpu.y, ball:pong.ball, hostScore, guestScore, level:pong.level};
+      await window.PartidaRapidaSupabase.updateRoomState(cloudSessionToken(), pong.roomCode, state, 'finished');
+    }catch(err){ console.warn('No se pudo cerrar sala online.', err); }
+  }
+  saveScore('pong', points, won ? `${hostScore}-${guestScore}` : t('consolationDetail'), {result:won?'win':'loss', mode:'room'});
+  playSound(won?'win':'fail');
+  stopPong();
+  const text = `${won ? t('roomWin') : t('roomLoss')} ${t('totalSaved',{points})}`;
+  setTimeout(()=>{ showResultModal(won ? t('winDetail') : t('result'), text, 'pong'); }, 650);
+}
 function resetPongBall(direction){ const {canvas,ball}=pong; ball.x=canvas.width/2; ball.y=canvas.height/2; ball.vx=direction*(4.2 + pong.level*.18); ball.vy=(Math.random()>.5?1:-1)*(2.2+Math.random()*2.4); }
 function finishPong(){
   const won=pong.player.score>pong.cpu.score;
@@ -400,13 +536,14 @@ function finishPong(){
   const text = `${title} ${t('totalSaved',{points})}`;
   setTimeout(()=>{ showResultModal(won ? t('winDetail') : t('result'), text, 'pong'); }, 650);
 }
-
 function updatePongHud(){ if(!pong) return; $('pongPlayerScore').textContent=pong.player.score; $('pongCpuScore').textContent=pong.cpu.score; $('pongLivePoints').textContent=Math.round(pong.points); $('pongLevel').textContent=pong.level; updateGameLabels(); }
 function drawPong(){
   const {ctx,canvas,player,cpu,ball}=pong; ctx.fillStyle='#18233d'; ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.fillStyle='rgba(255,255,255,.05)'; for(let x=0;x<canvas.width;x+=38){ ctx.fillRect(x,0,1,canvas.height); } for(let y=0;y<canvas.height;y+=38){ ctx.fillRect(0,y,canvas.width,1); }
   ctx.strokeStyle='rgba(255,255,255,.62)'; ctx.setLineDash([10,14]); ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(canvas.width/2,24); ctx.lineTo(canvas.width/2,canvas.height-24); ctx.stroke(); ctx.setLineDash([]);
   drawPaddle(ctx,player,'#fff'); drawPaddle(ctx,cpu,'#fff'); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.9)'; ctx.font='800 16px system-ui'; ctx.textAlign='center'; ctx.fillText(t('firstTo5'),canvas.width/2,30);
+  if(pong.mode==='room'){ ctx.font='700 13px system-ui'; ctx.fillText(t('syncWarning'),canvas.width/2,canvas.height-14); }
   if(pong.paused){ ctx.fillStyle='rgba(0,0,0,.45)'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; ctx.font='900 34px system-ui'; ctx.textAlign='center'; ctx.fillText(t('paused'),canvas.width/2,canvas.height/2); }
 }
 function drawPaddle(ctx,p,color){ ctx.fillStyle=color; roundRect(ctx,p.x,p.y,p.w,p.h,6); ctx.fill(); }
