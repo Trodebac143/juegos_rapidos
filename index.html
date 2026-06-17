@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Partida Rápida</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=790" />
 </head>
 <body>
   <div class="app-bg"></div>
@@ -126,13 +126,34 @@
       </div>
     </section>
 
+    <section id="gameDetailScreen" class="screen game-detail-screen">
+      <header class="topbar game-topbar">
+        <div class="user-heading">
+          <div id="detailAvatar" class="avatar-badge">🙂</div>
+          <div><span id="detailOverline" class="overline">Datos del juego</span><h2 id="detailTitle">Juego</h2></div>
+        </div>
+        <div class="game-buttons"><button id="detailBackBtn" class="ghost-btn" type="button">Volver</button></div>
+      </header>
+      <section class="panel detail-panel">
+        <div id="detailPreview" class="detail-preview game-art"></div>
+        <div class="detail-copy">
+          <h3 id="detailModesTitle">Modos disponibles</h3>
+          <p id="detailDescription">Descripción del juego.</p>
+          <p id="detailHelp" class="hint">Sistema de puntos.</p>
+          <div id="detailActions" class="game-actions detail-actions"></div>
+          <div id="detailRoomBox" class="room-box hidden"></div>
+          <div id="detailJoinBox" class="room-box hidden"></div>
+        </div>
+      </section>
+    </section>
+
     <section id="pongScreen" class="screen game-screen pong-screen">
       <header class="topbar game-topbar"><div class="user-heading"><div id="pongAvatar" class="avatar-badge">🙂</div><div><span id="pongOverline" class="overline">Pong contra CPU</span><h2><span id="playerLabel">Jugador</span> vs CPU</h2></div></div><div class="game-buttons"><button id="pausePongBtn" class="ghost-btn" type="button">Pausa</button><button class="ghost-btn lang-toggle" type="button" title="Cambiar idioma">CAS/VAL</button><button class="ghost-btn backHome" type="button">Volver</button></div></header>
       <section class="game-layout">
         <div class="scoreboard"><div><span id="pongPlayerScore">0</span><small id="pongPlayerSmall">Jugador</small></div><div class="target"><span id="pongLivePoints">0</span> pts · <span id="pongDifficultyLabel">Dificultad</span> <span id="pongLevel">1</span></div><div><span id="pongCpuScore">0</span><small id="pongCpuSmall">CPU</small></div></div>
         <div class="canvas-wrap"><canvas id="pongCanvas" width="760" height="430" aria-label="Juego Pong"></canvas><div id="pongFlash" class="game-flash hidden"></div></div>
-        <div class="mobile-controls"><button id="upBtn" type="button">▲</button><button id="downBtn" type="button">▼</button></div>
-        <p id="pongHint" class="control-hint">PC: ratón o teclas ↑ ↓. Móvil: botones inferiores o tocar la pantalla.</p>
+        <div class="mobile-controls"><button id="upBtn" type="button">◀</button><button id="downBtn" type="button">▶</button></div>
+        <p id="pongHint" class="control-hint">PC: teclas ← → o ratón. Móvil: botones inferiores o tocar la pantalla.</p>
       </section>
     </section>
 
@@ -143,6 +164,27 @@
         <div class="canvas-wrap"><canvas id="snakeCanvas" width="520" height="520" aria-label="Juego Serpiente"></canvas><div id="snakeFlash" class="game-flash hidden"></div></div>
         <div class="snake-controls"><button data-dir="up">▲</button><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div>
         <p id="snakeHint" class="control-hint">PC: flechas. Móvil: botones. La velocidad aumenta cuanto más aguantas.</p>
+      </section>
+    </section>
+
+
+    <section id="memoryScreen" class="screen game-screen memory-screen">
+      <header class="topbar game-topbar"><div class="user-heading"><div id="memoryAvatar" class="avatar-badge">🙂</div><div><span id="memoryOverline" class="overline">Memory</span><h2 id="memoryTitle">Encuentra las parejas</h2></div></div><div class="game-buttons"><button id="restartMemoryBtn" class="ghost-btn" type="button">Partida nueva</button><button class="ghost-btn lang-toggle" type="button" title="Cambiar idioma">CAS/VAL</button><button class="ghost-btn backHome" type="button">Volver</button></div></header>
+      <section class="game-layout narrow">
+        <div class="scoreboard"><div><span id="memoryScore">0</span><small id="memoryPointsSmall">Puntos</small></div><div class="target"><span id="memoryMoves">0</span> <small id="memoryMovesSmall">Movimientos</small></div><div><span id="memoryPairs">0/8</span><small id="memoryPairsSmall">Parejas</small></div></div>
+        <div id="memoryBoard" class="memory-board" aria-label="Tablero de Memory"></div>
+        <p id="memoryHint" class="control-hint">Toca dos cartas. Si coinciden, quedan descubiertas. Menos movimientos y menos tiempo dan más puntos.</p>
+      </section>
+    </section>
+
+
+    <section id="connect4Screen" class="screen game-screen connect4-screen">
+      <header class="topbar game-topbar"><div class="user-heading"><div id="connect4Avatar" class="avatar-badge">🙂</div><div><span id="connect4Overline" class="overline">Cuatro en raya</span><h2 id="connect4Title">Conecta cuatro fichas</h2></div></div><div class="game-buttons"><button id="restartConnect4Btn" class="ghost-btn" type="button">Nueva ronda</button><button class="ghost-btn lang-toggle" type="button" title="Cambiar idioma">CAS/VAL</button><button class="ghost-btn backHome" type="button">Volver</button></div></header>
+      <section class="game-layout narrow">
+        <div class="scoreboard"><div><span id="connect4Points">0</span><small id="connect4PointsSmall">Puntos</small></div><div class="target"><span id="connect4DifficultyLabel">Dificultad</span> <span id="connect4Level">1</span></div><div><span id="connect4Rounds">0</span><small id="connect4RoundsSmall">Rondas</small></div></div>
+        <div id="connect4Status" class="tic-status">Te toca. Elige una columna.</div>
+        <div id="connect4Board" class="connect4-board" aria-label="Tablero de cuatro en raya"></div>
+        <p id="connect4Hint" class="control-hint">Toca una columna para soltar ficha. Contra CPU o por sala online experimental.</p>
       </section>
     </section>
 
@@ -160,7 +202,7 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
-  <script src="supabase-api.js?v=762"></script>
-  <script src="app.js?v=762"></script>
+  <script src="supabase-api.js?v=770"></script>
+  <script src="app.js?v=790"></script>
 </body>
 </html>
