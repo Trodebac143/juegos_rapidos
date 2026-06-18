@@ -1023,17 +1023,60 @@ function updateShooterPowerups(dt){ shooter.powerups.forEach(p=>p.y+=p.vy*dt); s
 function updateShooterParticles(dt){ shooter.particles.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.98;p.vy*=.98;p.life-=dt;}); shooter.particles=shooter.particles.filter(p=>p.life>0); }
 function shooterFire(){ if(!shooter || shooter.fireCd>0 || shooter.respawn) return; shooter.bullets.push({x:shooter.player.x,y:shooter.player.y-23,vy:-560,r:3}); shooter.fireCd=Math.max(.13,.22-shooter.level*.01); }
 function shooterUseBomb(){
-  if(!shooter || shooter.bombs<=0 || shooter.bombCd>0 || shooter.respawn) return; shooter.bombs--; shooter.bombCd=.7; updateShooterHud(); shooterExplode(shooter.w/2,shooter.h/2,'#ffd33d',80);
-  shooter.enemies.forEach(e=>{shooter.kills++; shooter.score+=40; shooterExplode(e.x,e.y,'#ff9b2f',10);}); shooter.enemies=[];
-  if(shooter.boss){ shooter.boss.hp-=8+shooter.level*2; shooterExplode(shooter.boss.x,shooter.boss.y,'#ff3b4f',24); if(shooter.boss.hp<=0) shooterBossDown(); }
+  if(!shooter || shooter.bombs<=0 || shooter.bombCd>0 || shooter.respawn || shooter.finished) return;
+  shooter.bombs--;
+  shooter.bombCd=.55;
+  updateShooterHud();
+
+  // Onda expansiva: arma especial ofensiva.
+  shooterExplode(shooter.player.x,shooter.player.y,'#ffd33d',90);
+  shooterExplode(shooter.w/2,shooter.h*.45,'#ff9b2f',55);
+
+  let destroyed=0;
+  const smallWave = shooter.enemies.length <= 18;
+  const radius = smallWave ? 9999 : Math.max(170, shooter.w*.48);
+
+  for(const e of [...shooter.enemies]){
+    const d=Math.hypot(e.x-shooter.player.x,e.y-shooter.player.y);
+    if(d <= radius){
+      rm(shooter.enemies,e);
+      shooter.kills++;
+      destroyed++;
+      shooter.score += 120 + shooter.level*12;
+      shooterExplode(e.x,e.y,'#ff9b2f',18);
+    }else{
+      // Si hay una oleada muy grande, los enemigos lejanos quedan dañados.
+      e.hp = Math.max(1, e.hp-2);
+      shooterExplode(e.x,e.y,'#ffd33d',6);
+    }
+  }
+
+  if(shooter.boss){
+    const damage = 9 + shooter.level*4; // Mucho más que un disparo normal.
+    shooter.boss.hp -= damage;
+    shooter.score += 150 + shooter.level*30;
+    shooterExplode(shooter.boss.x,shooter.boss.y,'#ff3b4f',38);
+    if(shooter.boss.hp<=0){
+      shooterBossDown();
+      return;
+    }
+  }
+
+  showShooterMsg(destroyed ? `BOMBA
+-${destroyed} ENEMIGOS` : 'BOMBA', 650);
+  if(!shooter.boss && shooter.enemies.length===0){
+    if(shooter.kills>=shooter.killsForBoss) spawnShooterBoss();
+    else spawnShooterWave();
+  }
+  updateShooterHud();
 }
 function collideShooter(){
   for(const bullet of [...shooter.bullets]){
     for(const e of [...shooter.enemies]){ if(Math.hypot(bullet.x-e.x,bullet.y-e.y)<22){ rm(shooter.bullets,bullet); e.hp--; shooterExplode(e.x,e.y,e.hp>0?'#31d8ff':'#ff9b2f',8); if(e.hp<=0){ rm(shooter.enemies,e); shooter.kills++; shooter.score+=100+shooter.level*10; const dropRoll=Math.random(); if(dropRoll<.05 && shooter.bombs<shooter.maxBombs) shooter.powerups.push({x:e.x,y:e.y,vy:105,r:13,type:'bomb'}); else if(dropRoll<.13 && shooter.health<shooter.maxHealth) shooter.powerups.push({x:e.x,y:e.y,vy:105,r:13,type:'repair'}); if(shooter.kills>=shooter.killsForBoss && shooter.enemies.length<=2 && !shooter.boss) spawnShooterBoss(); } break; }}
     const b=shooter.boss; if(b && bullet.x>b.x-b.w/2 && bullet.x<b.x+b.w/2 && bullet.y>b.y-b.h/2 && bullet.y<b.y+b.h/2){ rm(shooter.bullets,bullet); b.hp--; shooterExplode(bullet.x,bullet.y,'#31d8ff',5); if(b.hp<=0) shooterBossDown(); }
   }
-  for(const b of [...shooter.enemyBullets]) if(shooter.inv<=0 && Math.hypot(b.x-shooter.player.x,b.y-shooter.player.y)<22){ rm(shooter.enemyBullets,b); shooterLoseLife(); return; }
-  for(const e of [...shooter.enemies]) if(shooter.inv<=0 && Math.hypot(e.x-shooter.player.x,e.y-shooter.player.y)<29){ rm(shooter.enemies,e); shooterLoseLife(); return; }
+  for(const b of [...shooter.enemyBullets]) if(shooter.inv<=0 && Math.hypot(b.x-shooter.player.x,b.y-shooter.player.y)<22){ rm(shooter.enemyBullets,b); shooterTakeDamage(25); return; }
+  for(const e of [...shooter.enemies]) if(shooter.inv<=0 && Math.hypot(e.x-shooter.player.x,e.y-shooter.player.y)<29){ rm(shooter.enemies,e); shooterTakeDamage(45); return; }
   for(const p of [...shooter.powerups]) if(Math.hypot(p.x-shooter.player.x,p.y-shooter.player.y)<30){ rm(shooter.powerups,p); if(p.type==='repair'){ shooterRepair(35); }else{ shooter.bombs=Math.min(shooter.maxBombs,shooter.bombs+1); updateShooterHud(); showShooterMsg('+💣',420); } }
   if(shooter.score>=shooter.nextLife){ if(shooter.lives<shooter.maxLives){ shooter.lives++; showShooterMsg('+1 VIDA',800); } shooter.nextLife+=5000; }
   updateShooterHud();
@@ -1044,7 +1087,7 @@ function shooterTakeDamage(amount){
   if(!shooter || shooter.respawn || shooter.finished || shooter.inv>0 || shooter.hitInv>0) return;
   shooter.health=Math.max(0,shooter.health-amount);
   shooter.hitInv=.38;
-  explodeShooter(shooter.player.x,shooter.player.y,'#ff3b4f',16);
+  shooterExplode(shooter.player.x,shooter.player.y,'#ff3b4f',16);
   updateShooterHud();
   if(shooter.health<=0) shooterLoseLife();
 }
@@ -1140,7 +1183,8 @@ function bindEvents(){
   document.querySelectorAll('.snake-controls button').forEach(b=>{ b.addEventListener('pointerdown',(ev)=>{ if(ev.cancelable) ev.preventDefault(); changeSnakeDir(b.dataset.dir); }); });
   $('pauseShooterBtn')?.addEventListener('click',()=>{ if(shooter){ shooter.paused=!shooter.paused; $('pauseShooterBtn').textContent=shooter.paused?'Seguir':'Pausa'; if(shooter.paused) showShooterMsg('PAUSA',999999); else $('shooterFlash')?.classList.add('hidden'); } });
   $('restartShooterBtn')?.addEventListener('click',startShooter);
-  $('shooterBombBtn')?.addEventListener('click',shooterUseBomb);
+  $('shooterBombBtn')?.addEventListener('pointerdown',e=>{ if(e.cancelable)e.preventDefault(); shooterUseBomb(); });
+  $('shooterBombBtn')?.addEventListener('click',e=>{ if(e.cancelable)e.preventDefault(); });
   $('shooterFireBtn')?.addEventListener('pointerdown',e=>{ if(e.cancelable)e.preventDefault(); if(shooter){ shooter.fire=true; shooterFire(); } });
   ['pointerup','pointercancel','pointerleave'].forEach(type=>$('shooterFireBtn')?.addEventListener(type,()=>{ if(shooter) shooter.fire=false; }));
   let shooterMovePointer=null; const mz=$('shooterMoveZone'); mz?.addEventListener('pointerdown',e=>{ shooterMovePointer=e.pointerId; mz.setPointerCapture(e.pointerId); const r=mz.getBoundingClientRect(); setShooterAxis(clamp((e.clientX-(r.left+r.width/2))/(r.width*.34),-1,1)); });
