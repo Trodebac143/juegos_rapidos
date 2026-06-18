@@ -64,7 +64,9 @@ canvas,
 }
 .game-screen.active{
   position:relative;
-  overflow:hidden;
+  overflow-x:hidden;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
 }
 .canvas-wrap{
   max-width:100%;
@@ -308,7 +310,7 @@ canvas{
   width:min(520px,100%);
   margin:0 auto;
   display:grid;
-  grid-template-rows:auto minmax(430px,calc(100dvh - 245px)) auto auto;
+  grid-template-rows:auto auto auto auto;
   gap:8px;
 }
 .shooter-hud{
@@ -347,9 +349,11 @@ canvas{
   min-height:0;
 }
 .shooter-canvas-wrap canvas{
+  display:block;
   width:100%;
-  height:100%;
-  min-height:430px;
+  height:clamp(300px,56dvh,460px);
+  min-height:300px;
+  max-height:460px;
   background:#030712;
 }
 .shooter-controls{
@@ -421,17 +425,23 @@ canvas{
 }
 @media(max-width:620px){
   .shooter-screen .topbar{margin-bottom:7px;}
-  .shooter-layout{grid-template-rows:auto minmax(390px,calc(100dvh - 232px)) auto auto;gap:7px;}
+  .shooter-layout{gap:7px;}
   .shooter-hud>div{padding:7px 4px;}
   .shooter-hud strong{font-size:1.08rem;}
-  .shooter-canvas-wrap canvas{min-height:390px;}
+  .shooter-canvas-wrap canvas{height:clamp(260px,48dvh,390px);min-height:260px;max-height:390px;}
   .shooter-move-zone,.shooter-action-zone{min-height:78px;}
   .shooter-controls{gap:7px;}
   .shooter-stick-base{width:108px;}
 }
 @media(max-width:390px){
-  .shooter-layout{grid-template-rows:auto minmax(360px,calc(100dvh - 226px)) auto auto;}
-  .shooter-canvas-wrap canvas{min-height:360px;}
+  .shooter-canvas-wrap canvas{height:clamp(240px,44dvh,340px);min-height:240px;max-height:340px;}
   .shooter-fire-btn{font-size:.9rem;}
   .shooter-action-zone{grid-template-columns:1fr 52px;}
+}
+
+
+/* V8.1 - Ajuste móvil Matamarcianos */
+@media(max-width:620px){
+  .shooter-screen.active{padding-bottom:10px;}
+  .shooter-controls{position:relative; z-index:2;}
 }
