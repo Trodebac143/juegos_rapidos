@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Partida Rápida</title>
-  <link rel="stylesheet" href="styles.css?v=790" />
+  <link rel="stylesheet" href="styles.css?v=800" />
 </head>
 <body>
   <div class="app-bg"></div>
@@ -83,7 +83,7 @@
           <div id="heroAvatar" class="big-avatar">🙂</div>
           <div>
             <h1 id="heroTitle">¿Echamos una partida?</h1>
-            <p id="heroText">Pong, Serpiente y Tres en raya están activos. En breve más juegos…</p>
+            <p id="heroText">Pong, Serpiente, Tres en raya, Memory, Cuatro en raya y Matamarcianos están activos.</p>
           </div>
         </div>
         <div class="hero-actions">
@@ -147,6 +147,21 @@
       </section>
     </section>
 
+
+
+    <section id="shooterScreen" class="screen game-screen shooter-screen">
+      <header class="topbar game-topbar"><div class="user-heading"><div id="shooterAvatar" class="avatar-badge">🙂</div><div><span class="overline">Matamarcianos contra CPU</span><h2>Sobrevive a las oleadas</h2></div></div><div class="game-buttons"><button id="pauseShooterBtn" class="ghost-btn" type="button">Pausa</button><button id="restartShooterBtn" class="ghost-btn" type="button">Reiniciar</button><button class="ghost-btn backHome" type="button">Volver</button></div></header>
+      <section class="shooter-layout">
+        <div class="shooter-hud"><div><small>PUNTOS</small><strong id="shooterScore">0</strong></div><div><small>VIDAS</small><strong id="shooterLives">♥♥♥♥♥</strong></div><div><small>BOMBAS</small><strong id="shooterBombs">💣 0</strong></div></div>
+        <div class="canvas-wrap shooter-canvas-wrap"><canvas id="shooterCanvas" aria-label="Juego Matamarcianos"></canvas><div id="shooterFlash" class="game-flash hidden"></div></div>
+        <div class="shooter-controls">
+          <div id="shooterMoveZone" class="shooter-move-zone"><span>MOVER</span><div class="shooter-stick-base"><div id="shooterStickKnob" class="shooter-stick-knob"></div></div></div>
+          <div class="shooter-action-zone"><button id="shooterFireBtn" type="button" class="shooter-fire-btn">DISPARO</button><button id="shooterBombBtn" type="button" class="shooter-bomb-btn">💣</button></div>
+        </div>
+        <p class="control-hint">Móvil: mueve con el dedo izquierdo y dispara con el derecho. Las bombas aparecen al azar al destruir marcianos.</p>
+      </section>
+    </section>
+
     <section id="pongScreen" class="screen game-screen pong-screen">
       <header class="topbar game-topbar"><div class="user-heading"><div id="pongAvatar" class="avatar-badge">🙂</div><div><span id="pongOverline" class="overline">Pong contra CPU</span><h2><span id="playerLabel">Jugador</span> vs CPU</h2></div></div><div class="game-buttons"><button id="pausePongBtn" class="ghost-btn" type="button">Pausa</button><button class="ghost-btn lang-toggle" type="button" title="Cambiar idioma">CAS/VAL</button><button class="ghost-btn backHome" type="button">Volver</button></div></header>
       <section class="game-layout">
@@ -203,6 +218,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
   <script src="supabase-api.js?v=770"></script>
-  <script src="app.js?v=790"></script>
+  <script src="app.js?v=800"></script>
 </body>
 </html>

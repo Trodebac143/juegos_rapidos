@@ -282,3 +282,156 @@ canvas{
   .connect4-board{ gap:5px; padding:8px; border-radius:16px; }
   .connect4-cell{ border-width:2px; }
 }
+
+/* V8.0 - Matamarcianos integrado */
+.shooter-art{
+  background:radial-gradient(circle at 50% 20%,#3058ad 0,#101b44 48%,#050817 100%);
+  color:#fff;
+}
+.shooter-art::before{
+  content:"✦ ✧ ✦";
+  position:absolute;
+  right:12px;
+  bottom:10px;
+  color:#ffd33d;
+  font-size:1.1rem;
+  opacity:.9;
+}
+.shooter-art span{
+  font-size:2.7rem;
+  filter:drop-shadow(0 4px 0 rgba(0,0,0,.25));
+}
+.shooter-screen.active{
+  display:block;
+}
+.shooter-layout{
+  width:min(520px,100%);
+  margin:0 auto;
+  display:grid;
+  grid-template-rows:auto minmax(430px,calc(100dvh - 245px)) auto auto;
+  gap:8px;
+}
+.shooter-hud{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:7px;
+}
+.shooter-hud>div{
+  border:2px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+  text-align:center;
+  padding:8px 6px;
+  box-shadow:var(--shadow);
+}
+.shooter-hud small{
+  display:block;
+  font-size:.72rem;
+  font-weight:1000;
+  color:var(--blue);
+  letter-spacing:.05em;
+}
+.shooter-hud strong{
+  display:block;
+  margin-top:2px;
+  font-size:1.25rem;
+  color:var(--red);
+  line-height:1;
+  white-space:nowrap;
+}
+#shooterLives{ color:#e84c3d; letter-spacing:1px; }
+.shooter-canvas-wrap{
+  padding:5px;
+  background:#07122f;
+  border-color:#2f6eb6;
+  min-height:0;
+}
+.shooter-canvas-wrap canvas{
+  width:100%;
+  height:100%;
+  min-height:430px;
+  background:#030712;
+}
+.shooter-controls{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  touch-action:none;
+  user-select:none;
+}
+.shooter-move-zone,.shooter-action-zone{
+  border:2px solid var(--line);
+  border-radius:18px;
+  background:#fff8e8;
+  min-height:82px;
+  box-shadow:var(--shadow);
+  touch-action:none;
+}
+.shooter-move-zone{
+  display:grid;
+  place-items:center;
+  position:relative;
+}
+.shooter-move-zone span{
+  position:absolute;
+  top:7px;
+  left:12px;
+  font-size:.72rem;
+  font-weight:1000;
+  color:var(--blue);
+}
+.shooter-stick-base{
+  width:120px;
+  height:42px;
+  border-radius:999px;
+  border:2px solid var(--line-strong);
+  background:#17233d;
+  display:grid;
+  place-items:center;
+}
+.shooter-stick-knob{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:linear-gradient(180deg,#43d8ff,#0b74df);
+  box-shadow:0 0 14px rgba(49,216,255,.55);
+  transition:transform .04s linear;
+}
+.shooter-action-zone{
+  display:grid;
+  grid-template-columns:1fr 58px;
+  gap:7px;
+  padding:8px;
+}
+.shooter-fire-btn,.shooter-bomb-btn{
+  border:0;
+  border-radius:16px;
+  color:#fff;
+  font-weight:1000;
+  box-shadow:0 5px 0 rgba(0,0,0,.32), inset 0 0 14px rgba(255,255,255,.2);
+  touch-action:none;
+}
+.shooter-fire-btn{
+  background:linear-gradient(180deg,#ff5564,#ba1024);
+  font-size:1rem;
+}
+.shooter-bomb-btn{
+  background:linear-gradient(180deg,#ffcc42,#f07a00);
+  font-size:1.6rem;
+}
+@media(max-width:620px){
+  .shooter-screen .topbar{margin-bottom:7px;}
+  .shooter-layout{grid-template-rows:auto minmax(390px,calc(100dvh - 232px)) auto auto;gap:7px;}
+  .shooter-hud>div{padding:7px 4px;}
+  .shooter-hud strong{font-size:1.08rem;}
+  .shooter-canvas-wrap canvas{min-height:390px;}
+  .shooter-move-zone,.shooter-action-zone{min-height:78px;}
+  .shooter-controls{gap:7px;}
+  .shooter-stick-base{width:108px;}
+}
+@media(max-width:390px){
+  .shooter-layout{grid-template-rows:auto minmax(360px,calc(100dvh - 226px)) auto auto;}
+  .shooter-canvas-wrap canvas{min-height:360px;}
+  .shooter-fire-btn{font-size:.9rem;}
+  .shooter-action-zone{grid-template-columns:1fr 52px;}
+}
