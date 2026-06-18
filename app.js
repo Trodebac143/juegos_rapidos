@@ -233,10 +233,21 @@ async function renderRanking(){
   $('allRankBtn').classList.toggle('active', rankingScope === 'all');
 
   let scores;
+  const localScoresForRanking = () => {
+    let local = getJson(STORAGE_SCORES, []).filter(s => s.game === activeRanking);
+    if(rankingScope === 'weekly') local = local.filter(isWeekly);
+    return local.sort((a,b) => b.points - a.points).slice(0,10);
+  };
+
   if(cloudEnabled()){
     try{
       const rows = await window.PartidaRapidaSupabase.getRanking(activeRanking, rankingScope);
       scores = rows.map(r => ({ user:r.username, avatar:r.avatar_code, points:r.points, createdAt:r.created_at, result:r.result }));
+      // Si Supabase aún no acepta este juego o devuelve ranking vacío, mostramos al menos la puntuación local.
+      if(!scores.length){
+        const local = localScoresForRanking();
+        if(local.length) scores = local;
+      }
     } catch(err){
       console.warn('No se pudo cargar ranking de Supabase. Se usa ranking local.', err);
       scores = null;
@@ -244,9 +255,7 @@ async function renderRanking(){
   }
 
   if(!scores){
-    scores = getJson(STORAGE_SCORES, []).filter(s => s.game === activeRanking);
-    if(rankingScope === 'weekly') scores = scores.filter(isWeekly);
-    scores = scores.sort((a,b) => b.points - a.points).slice(0,10);
+    scores = localScoresForRanking();
   }
 
   const list = $('rankingList'); list.innerHTML = '';
@@ -265,7 +274,10 @@ function saveScore(game, points, detail, meta={}){
 
   if(cloudEnabled() && cloudSessionToken()){
     window.PartidaRapidaSupabase.recordScore(cloudSessionToken(), game, rounded, meta.result || '', meta.mode || 'cpu', detail || '')
-      .then(()=>renderRanking())
+      .then(result=>{
+        if(result && result.ok === false) console.warn('Supabase rechazó la puntuación:', result.message);
+        renderRanking();
+      })
       .catch(err => console.warn('No se pudo guardar puntuación en Supabase.', err));
   }
 
@@ -1013,8 +1025,20 @@ function updateShooter(dt){
   if(!shooter.boss && shooter.enemies.length===0){ if(shooter.kills>=shooter.killsForBoss) spawnShooterBoss(); else spawnShooterWave(); }
 }
 function updateShooterEnemies(dt){
-  let reverse=false; shooter.enemies.forEach(e=>{e.x+=e.vx*dt; e.y+=(5+shooter.level*1.4)*dt; if(e.x<18||e.x>shooter.w-18) reverse=true; e.shoot-=dt; if(e.shoot<=0 && Math.random()<.32){ shooter.enemyBullets.push({x:e.x,y:e.y+14,vx:(Math.random()-.5)*Math.min(70,shooter.level*12),vy:145+shooter.level*18,r:4}); e.shoot=Math.max(.8,2.7-shooter.level*.16)+Math.random()*1.2; } if(e.y>shooter.player.y-34) shooterTakeDamage(50);});
+  let reverse=false;
+  shooter.enemies.forEach(e=>{
+    e.x+=e.vx*dt;
+    e.y+=(5+shooter.level*1.4)*dt;
+    if(e.x<18||e.x>shooter.w-18) reverse=true;
+    e.shoot-=dt;
+    if(e.shoot<=0 && Math.random()<.32){
+      shooter.enemyBullets.push({x:e.x,y:e.y+14,vx:(Math.random()-.5)*Math.min(70,shooter.level*12),vy:145+shooter.level*18,r:4});
+      e.shoot=Math.max(.8,2.7-shooter.level*.16)+Math.random()*1.2;
+    }
+  });
   if(reverse) shooter.enemies.forEach(e=>{e.vx*=-1;e.y+=10;});
+  // Si los enemigos llegan abajo, simplemente desaparecen. No dañan a la nave ni descuentan resistencia.
+  shooter.enemies = shooter.enemies.filter(e => e.y < shooter.h + 32);
 }
 function updateShooterBoss(dt){
   const b=shooter.boss; if(!b) return; b.x+=b.vx*dt; if(b.x<b.w/2+8||b.x>shooter.w-b.w/2-8) b.vx*=-1; b.shoot-=dt; if(b.shoot<=0){ const arr=shooter.level>=4?[-.85,-.45,0,.45,.85]:[-.55,0,.55]; arr.forEach(a=>shooter.enemyBullets.push({x:b.x,y:b.y+b.h/2,vx:a*125,vy:175+shooter.level*18,r:5})); b.shoot=Math.max(.45,1.15-shooter.level*.08); }
