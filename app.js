@@ -992,17 +992,27 @@ function newBlackjackHand(){ if(!blackjack) return startBlackjack(); blackjack.d
 function cardBackMarkup(mark='★'){ return `<div class="play-card back"><div class="card-back-inner"><span>${mark}</span></div></div>`; }
 function frenchSuitClass(s){ return {'♠':'spades','♥':'hearts','♦':'diamonds','♣':'clubs'}[s] || 'spades'; }
 function frenchFaceLabel(rank){ return ({A:'ACE',J:'JACK',Q:'QUEEN',K:'KING'})[rank] || ''; }
+function frenchSuitMarkup(s, size='medium'){
+  const cls=frenchSuitClass(s);
+  const svgs={
+    hearts:`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 56S10 42 10 24c0-8 6-14 14-14 5 0 8 2 12 7 4-5 7-7 12-7 8 0 14 6 14 14 0 18-22 32-30 32z" fill="#d63a3a" stroke="#9d1f1f" stroke-width="3" stroke-linejoin="round"/></svg>`,
+    diamonds:`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8l18 24-18 24L14 32 32 8z" fill="#d63a3a" stroke="#9d1f1f" stroke-width="3" stroke-linejoin="round"/></svg>`,
+    spades:`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8c0 0-20 17-20 31 0 7 5 13 12 13 4 0 7-2 8-5v7h-8v6h16v-6h-8v-7c1 3 4 5 8 5 7 0 12-6 12-13C52 25 32 8 32 8z" fill="#1f2937" stroke="#111827" stroke-width="3" stroke-linejoin="round"/></svg>`,
+    clubs:`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="18" r="10" fill="#1f2937" stroke="#111827" stroke-width="3"/><circle cx="20" cy="34" r="10" fill="#1f2937" stroke="#111827" stroke-width="3"/><circle cx="44" cy="34" r="10" fill="#1f2937" stroke="#111827" stroke-width="3"/><path d="M32 30v20h-8v6h16v-6h-8V30z" fill="#1f2937" stroke="#111827" stroke-width="3" stroke-linejoin="round"/></svg>`
+  };
+  return `<span class="french-suit ${cls} ${size}">${svgs[cls] || svgs.spades}</span>`;
+}
 function renderCard(c, hidden=false){
   if(hidden) return cardBackMarkup('♠');
   const suitClass=frenchSuitClass(c.suit);
   const faceLabel=frenchFaceLabel(c.rank);
   return `<div class="play-card french ${suitClass} ${c.red?'red':''}">
-    <div class="card-corner top"><span class="rank">${c.rank}</span><span class="suit">${c.suit}</span></div>
+    <div class="card-corner top"><span class="card-rank">${c.rank}</span>${frenchSuitMarkup(c.suit,'tiny')}</div>
     <div class="card-center">
-      <span class="big-suit">${c.suit}</span>
+      ${frenchSuitMarkup(c.suit,'large')}
       ${faceLabel?`<span class="face-badge">${faceLabel}</span>`:''}
     </div>
-    <div class="card-corner bottom"><span class="rank">${c.rank}</span><span class="suit">${c.suit}</span></div>
+    <div class="card-corner bottom"><span class="card-rank">${c.rank}</span>${frenchSuitMarkup(c.suit,'tiny')}</div>
   </div>`;
 }
 function renderBlackjack(reveal=false){ if(!blackjack) return; $('blackjackScore').textContent=blackjack.score; $('blackjackHands').textContent=blackjack.hands; $('blackjackStreak').textContent=blackjack.streak; $('blackjackPlayerValue').textContent=blackjackValue(blackjack.player); $('blackjackDealerValue').textContent=reveal?blackjackValue(blackjack.dealer):'?'; $('blackjackPlayerHand').innerHTML=blackjack.player.map(c=>renderCard(c)).join(''); $('blackjackDealerHand').innerHTML=blackjack.dealer.map((c,i)=>renderCard(c,!reveal && i===1)).join(''); $('blackjackHitBtn').disabled=blackjack.finished; $('blackjackStandBtn').disabled=blackjack.finished; }
@@ -1034,9 +1044,9 @@ function renderSpanishCenter(c){
 function renderSpanishCard(c, hidden=false){
   if(hidden) return cardBackMarkup('🂠');
   return `<div class="play-card spanish suit-${c.suit} ${c.red?'red':''}">
-    <div class="card-corner top"><span class="rank">${c.rank}</span>${spanishSuitMarkup(c.suit,'tiny')}</div>
+    <div class="card-corner top"><span class="card-rank">${c.rank}</span>${spanishSuitMarkup(c.suit,'tiny')}</div>
     <div class="card-center spanish-center">${renderSpanishCenter(c)}</div>
-    <div class="card-corner bottom"><span class="rank">${c.rank}</span>${spanishSuitMarkup(c.suit,'tiny')}</div>
+    <div class="card-corner bottom"><span class="card-rank">${c.rank}</span>${spanishSuitMarkup(c.suit,'tiny')}</div>
     <div class="spanish-suit-name">${spanishSuitName(c.suit)}</div>
   </div>`;
 }
