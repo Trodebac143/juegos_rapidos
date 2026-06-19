@@ -989,7 +989,22 @@ function shuffle(a){ const arr=[...a]; for(let i=arr.length-1;i>0;i--){ const j=
 function draw(deck){ return deck.pop(); }
 function blackjackValue(hand){ let total=0, aces=0; hand.forEach(c=>{ if(c.rank==='A'){ total+=11; aces++; } else if(['J','Q','K'].includes(c.rank)) total+=10; else total+=Number(c.rank); }); while(total>21 && aces){ total-=10; aces--; } return total; }
 function newBlackjackHand(){ if(!blackjack) return startBlackjack(); blackjack.deck=makeFrenchDeck(); blackjack.player=[draw(blackjack.deck),draw(blackjack.deck)]; blackjack.dealer=[draw(blackjack.deck),draw(blackjack.deck)]; blackjack.hands++; blackjack.finished=false; $('blackjackStatus').textContent='Pide carta o plántate.'; renderBlackjack(false); if(blackjackValue(blackjack.player)===21) blackjackStand(); }
-function renderCard(c, hidden=false){ if(hidden) return '<div class="play-card back">★</div>'; return `<div class="play-card ${c.red?'red':''}"><span>${c.rank}</span><strong>${c.suit}</strong></div>`; }
+function cardBackMarkup(mark='★'){ return `<div class="play-card back"><div class="card-back-inner"><span>${mark}</span></div></div>`; }
+function frenchSuitClass(s){ return {'♠':'spades','♥':'hearts','♦':'diamonds','♣':'clubs'}[s] || 'spades'; }
+function frenchFaceLabel(rank){ return ({A:'ACE',J:'JACK',Q:'QUEEN',K:'KING'})[rank] || ''; }
+function renderCard(c, hidden=false){
+  if(hidden) return cardBackMarkup('♠');
+  const suitClass=frenchSuitClass(c.suit);
+  const faceLabel=frenchFaceLabel(c.rank);
+  return `<div class="play-card french ${suitClass} ${c.red?'red':''}">
+    <div class="card-corner top"><span class="rank">${c.rank}</span><span class="suit">${c.suit}</span></div>
+    <div class="card-center">
+      <span class="big-suit">${c.suit}</span>
+      ${faceLabel?`<span class="face-badge">${faceLabel}</span>`:''}
+    </div>
+    <div class="card-corner bottom"><span class="rank">${c.rank}</span><span class="suit">${c.suit}</span></div>
+  </div>`;
+}
 function renderBlackjack(reveal=false){ if(!blackjack) return; $('blackjackScore').textContent=blackjack.score; $('blackjackHands').textContent=blackjack.hands; $('blackjackStreak').textContent=blackjack.streak; $('blackjackPlayerValue').textContent=blackjackValue(blackjack.player); $('blackjackDealerValue').textContent=reveal?blackjackValue(blackjack.dealer):'?'; $('blackjackPlayerHand').innerHTML=blackjack.player.map(c=>renderCard(c)).join(''); $('blackjackDealerHand').innerHTML=blackjack.dealer.map((c,i)=>renderCard(c,!reveal && i===1)).join(''); $('blackjackHitBtn').disabled=blackjack.finished; $('blackjackStandBtn').disabled=blackjack.finished; }
 function blackjackHit(){ if(!blackjack || blackjack.finished) return; blackjack.player.push(draw(blackjack.deck)); const val=blackjackValue(blackjack.player); renderBlackjack(false); if(val>21) finishBlackjack('loss','Te has pasado. Gana la banca.'); }
 function blackjackStand(){ if(!blackjack || blackjack.finished) return; while(blackjackValue(blackjack.dealer)<17) blackjack.dealer.push(draw(blackjack.deck)); const pv=blackjackValue(blackjack.player), dv=blackjackValue(blackjack.dealer); let result='draw', msg='Empate.'; if(pv>21){ result='loss'; msg='Te has pasado. Gana la banca.'; } else if(dv>21 || pv>dv){ result='win'; msg='Has ganado la mano.'; } else if(dv>pv){ result='loss'; msg='Gana la banca.'; } finishBlackjack(result,msg); }
@@ -998,8 +1013,33 @@ function finishBlackjack(result,msg){ if(!blackjack || blackjack.finished) retur
 function startSiete(){ stopAllGames(); setVisibleAvatars(); switchScreen('sieteymedio'); siete={deck:[],player:[],dealer:[],score:0,hands:0,streak:0,finished:false}; newSieteHand(); }
 function makeSpanishDeck(){ const suits=['oros','copas','espadas','bastos']; const ranks=['1','2','3','4','5','6','7','S','C','R']; const deck=[]; suits.forEach(s=>ranks.forEach(r=>deck.push({rank:r,suit:s,red:s==='oros'||s==='copas'}))); return shuffle(deck); }
 function sieteValue(hand){ return hand.reduce((sum,c)=>sum+(['S','C','R'].includes(c.rank)?0.5:Number(c.rank)),0); }
-function spanishSuitIcon(s){ return {oros:'🟡',copas:'🏆',espadas:'⚔️',bastos:'🌿'}[s] || '🃏'; }
-function renderSpanishCard(c, hidden=false){ if(hidden) return '<div class="play-card back">★</div>'; return `<div class="play-card spanish ${c.red?'red':''}"><span>${c.rank}</span><strong>${spanishSuitIcon(c.suit)}</strong></div>`; }
+function spanishSuitName(s){ return {oros:'OROS',copas:'COPAS',espadas:'ESPADAS',bastos:'BASTOS'}[s] || 'CARTA'; }
+function spanishRankName(rank){ return ({S:'SOTA',C:'CABALLO',R:'REY'})[rank] || rank; }
+function spanishSuitMarkup(s, size='medium'){
+  const svgs={
+    oros:`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="18" fill="#e2aa1d" stroke="#ad7400" stroke-width="4"/><circle cx="32" cy="32" r="6.5" fill="#fff3b0" stroke="#d79b0f" stroke-width="2"/><path d="M32 10l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#fff8de" opacity=".9"/></svg>`,
+    copas:`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 10h28v9c0 10-6 17-14 18v7h8v8H24v-8h8v-7c-8-1-14-8-14-18v-9z" fill="#cb2e2e" stroke="#891b1b" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="47" width="12" height="5" rx="2.5" fill="#f7c7a4"/></svg>`,
+    espadas:`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 7l11 11-6 6-5-5-5 5-6-6 11-11z" fill="#bcc6d3" stroke="#5f6b7a" stroke-width="3" stroke-linejoin="round"/><rect x="28.5" y="22" width="7" height="24" rx="2" fill="#bcc6d3" stroke="#5f6b7a" stroke-width="2"/><rect x="22" y="43" width="20" height="5" rx="2.5" fill="#b78b42" stroke="#7a5827" stroke-width="2"/><rect x="29" y="48" width="6" height="8" rx="2" fill="#7a5827"/></svg>`,
+    bastos:`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M39 8c6 3 9 10 7 16L33 56h-7l11-29c-5-4-7-11-4-16 2-4 4-4 6-3z" fill="#9a6232" stroke="#6d421d" stroke-width="3" stroke-linejoin="round"/><path d="M25 19c-7 0-10 4-12 10 6 1 11-1 15-6" fill="#64a84d" stroke="#397031" stroke-width="2" stroke-linejoin="round"/><path d="M41 23c8-1 12 2 15 8-7 3-12 2-17-2" fill="#7fc45f" stroke="#397031" stroke-width="2" stroke-linejoin="round"/></svg>`
+  };
+  return `<span class="spanish-suit ${s} ${size}">${svgs[s] || svgs.oros}</span>`;
+}
+function renderSpanishCenter(c){
+  if(['S','C','R'].includes(c.rank)){
+    return `<div class="spanish-face">${spanishSuitMarkup(c.suit,'large')}<span class="spanish-rank-name">${spanishRankName(c.rank)}</span></div>`;
+  }
+  const count=Math.max(1, Math.min(7, Number(c.rank)||1));
+  return `<div class="spanish-pips count-${count}">${Array.from({length:count},()=>spanishSuitMarkup(c.suit,'small')).join('')}</div>`;
+}
+function renderSpanishCard(c, hidden=false){
+  if(hidden) return cardBackMarkup('🂠');
+  return `<div class="play-card spanish suit-${c.suit} ${c.red?'red':''}">
+    <div class="card-corner top"><span class="rank">${c.rank}</span>${spanishSuitMarkup(c.suit,'tiny')}</div>
+    <div class="card-center spanish-center">${renderSpanishCenter(c)}</div>
+    <div class="card-corner bottom"><span class="rank">${c.rank}</span>${spanishSuitMarkup(c.suit,'tiny')}</div>
+    <div class="spanish-suit-name">${spanishSuitName(c.suit)}</div>
+  </div>`;
+}
 function newSieteHand(){ if(!siete) return startSiete(); siete.deck=makeSpanishDeck(); siete.player=[draw(siete.deck)]; siete.dealer=[draw(siete.deck)]; siete.hands++; siete.finished=false; $('sieteStatus').textContent='Pide carta o plántate.'; renderSiete(false); }
 function renderSiete(reveal=false){ if(!siete) return; $('sieteScore').textContent=siete.score; $('sieteHands').textContent=siete.hands; $('sieteStreak').textContent=siete.streak; $('sietePlayerValue').textContent=sieteValue(siete.player).toString().replace('.5','½'); $('sieteDealerValue').textContent=reveal?sieteValue(siete.dealer).toString().replace('.5','½'):'?'; $('sietePlayerHand').innerHTML=siete.player.map(c=>renderSpanishCard(c)).join(''); $('sieteDealerHand').innerHTML=siete.dealer.map((c,i)=>renderSpanishCard(c,!reveal && i>0)).join(''); $('sieteHitBtn').disabled=siete.finished; $('sieteStandBtn').disabled=siete.finished; }
 function sieteHit(){ if(!siete || siete.finished) return; siete.player.push(draw(siete.deck)); renderSiete(false); if(sieteValue(siete.player)>7.5) finishSiete('loss','Te has pasado de 7½.'); }
