@@ -617,15 +617,14 @@ canvas{
 .play-card.spanish{background:linear-gradient(180deg,#fffef9,#fff5e9);}
 .card-corner{
   position:absolute;
-  left:7px;
+  left:8px;
+  top:7px;
   display:grid;
   justify-items:center;
   gap:2px;
   z-index:2;
   line-height:1;
 }
-.card-corner.top{top:6px;}
-.card-corner.bottom{right:7px;left:auto;bottom:6px;transform:none;}
 .card-corner .card-rank,.card-corner .french-suit,.card-corner .spanish-suit{
   background:none !important;
   border:none !important;
@@ -641,11 +640,12 @@ canvas{
 .card-corner .card-rank{font-size:1.02rem;font-weight:1000;letter-spacing:-.01em;}
 .card-center{
   position:absolute;
-  inset:18px 8px 16px;
+  inset:22px 8px 16px;
   display:grid;
   place-items:center;
   text-align:center;
 }
+.french-center{inset:24px 8px 16px;}
 .face-badge{
   font-size:.52rem;
   font-weight:1000;
@@ -748,7 +748,6 @@ canvas{
 @media(max-width:620px){
   .play-card{width:60px;height:88px;border-radius:10px;}
   .card-corner{left:6px;}
-  .card-corner.bottom{right:6px;}
   .card-corner .card-rank{font-size:.95rem;}
   .french-suit.large{width:24px;height:24px;}
   .french-suit.tiny{width:12px;height:12px;}

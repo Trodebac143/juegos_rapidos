@@ -1004,15 +1004,13 @@ function frenchSuitMarkup(s, size='medium'){
 }
 function renderCard(c, hidden=false){
   if(hidden) return cardBackMarkup('♠');
-  const suitClass=frenchSuitClass(c.suit);
   const faceLabel=frenchFaceLabel(c.rank);
-  return `<div class="play-card french ${suitClass} ${c.red?'red':''}">
+  return `<div class="play-card french ${frenchSuitClass(c.suit)} ${c.red?'red':''}">
     <div class="card-corner top"><span class="card-rank">${c.rank}</span>${frenchSuitMarkup(c.suit,'tiny')}</div>
-    <div class="card-center">
+    <div class="card-center french-center">
       ${frenchSuitMarkup(c.suit,'large')}
       ${faceLabel?`<span class="face-badge">${faceLabel}</span>`:''}
     </div>
-    <div class="card-corner bottom"><span class="card-rank">${c.rank}</span>${frenchSuitMarkup(c.suit,'tiny')}</div>
   </div>`;
 }
 function renderBlackjack(reveal=false){ if(!blackjack) return; $('blackjackScore').textContent=blackjack.score; $('blackjackHands').textContent=blackjack.hands; $('blackjackStreak').textContent=blackjack.streak; $('blackjackPlayerValue').textContent=blackjackValue(blackjack.player); $('blackjackDealerValue').textContent=reveal?blackjackValue(blackjack.dealer):'?'; $('blackjackPlayerHand').innerHTML=blackjack.player.map(c=>renderCard(c)).join(''); $('blackjackDealerHand').innerHTML=blackjack.dealer.map((c,i)=>renderCard(c,!reveal && i===1)).join(''); $('blackjackHitBtn').disabled=blackjack.finished; $('blackjackStandBtn').disabled=blackjack.finished; }
@@ -1046,7 +1044,6 @@ function renderSpanishCard(c, hidden=false){
   return `<div class="play-card spanish suit-${c.suit} ${c.red?'red':''}">
     <div class="card-corner top"><span class="card-rank">${c.rank}</span>${spanishSuitMarkup(c.suit,'tiny')}</div>
     <div class="card-center spanish-center">${renderSpanishCenter(c)}</div>
-    <div class="card-corner bottom"><span class="card-rank">${c.rank}</span>${spanishSuitMarkup(c.suit,'tiny')}</div>
     <div class="spanish-suit-name">${spanishSuitName(c.suit)}</div>
   </div>`;
 }
