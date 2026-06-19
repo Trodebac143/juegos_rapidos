@@ -490,3 +490,141 @@ canvas{
   .shooter-life-panel{padding:6px 8px;gap:7px;}
   .shooter-life-track{height:13px;}
 }
+
+/* V8.5 - cartas, dados y tres en raya con movimiento */
+.card-art{
+  background:linear-gradient(135deg,#fff7df 0%,#ffe1a6 48%,#dff2d7 100%);
+}
+.card-art::before,.card-art::after{
+  content:"";
+  position:absolute;
+  width:48px;height:68px;
+  border:2px solid var(--line-strong);
+  border-radius:8px;
+  background:#fff;
+  box-shadow:0 5px 0 rgba(0,0,0,.08);
+}
+.card-art::before{left:38px;top:34px;transform:rotate(-12deg);}
+.card-art::after{right:42px;top:28px;transform:rotate(10deg);}
+.card-art span{z-index:2;text-shadow:0 2px 0 #fff;}
+.liar-art{
+  background:linear-gradient(135deg,#f7f0d9,#dff2d7);
+}
+.liar-art::before{
+  content:"⚀ ⚁ ⚂";
+  position:absolute;bottom:12px;right:14px;font-size:1.5rem;opacity:.8;
+}
+.tic-cell.selected{
+  background:#ffe59a;
+  border-color:var(--red);
+  transform:scale(.97);
+  box-shadow:inset 0 0 0 5px rgba(232,76,61,.18);
+}
+.card-table-layout,.liar-layout{
+  width:min(620px,100%);
+  margin:0 auto;
+}
+.card-status{
+  text-align:center;
+  border:2px solid var(--line);
+  border-radius:16px;
+  background:#fff;
+  padding:12px;
+  margin-bottom:12px;
+  font-weight:1000;
+  color:var(--blue);
+  min-height:52px;
+}
+.card-table,.dice-table{
+  border:3px solid var(--line-strong);
+  border-radius:22px;
+  background:radial-gradient(circle at 50% 12%,rgba(255,255,255,.20),transparent 32%),linear-gradient(180deg,#2f7d4a,#1f5e38);
+  box-shadow:var(--shadow);
+  padding:14px;
+  display:grid;
+  gap:14px;
+}
+.spanish-table .card-table{background:radial-gradient(circle at 50% 12%,rgba(255,255,255,.20),transparent 32%),linear-gradient(180deg,#8d4f27,#5f321b);}
+.hand-block{
+  border:2px solid rgba(255,255,255,.42);
+  border-radius:18px;
+  padding:10px;
+  background:rgba(255,255,255,.12);
+}
+.hand-title{
+  color:#fff;
+  font-weight:1000;
+  margin-bottom:8px;
+  text-shadow:0 2px 0 rgba(0,0,0,.22);
+}
+.card-hand,.dice-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  min-height:82px;
+  align-items:center;
+}
+.play-card{
+  width:58px;
+  height:78px;
+  border:2px solid #33271f;
+  border-radius:10px;
+  background:#fffdf8;
+  color:#1f2937;
+  display:grid;
+  grid-template-rows:auto 1fr;
+  place-items:center;
+  font-weight:1000;
+  box-shadow:0 5px 0 rgba(0,0,0,.18);
+}
+.play-card span{font-size:1.05rem;line-height:1;align-self:end;}
+.play-card strong{font-size:1.8rem;line-height:1;align-self:start;}
+.play-card.red{color:#c53030;}
+.play-card.back{background:repeating-linear-gradient(45deg,#2f6eb6 0 8px,#173b68 8px 16px);color:#fff;font-size:2rem;display:grid;place-items:center;}
+.play-card.spanish strong{font-size:1.55rem;}
+.card-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.card-actions button:disabled{opacity:.55;filter:grayscale(.2);cursor:not-allowed;}
+.die{
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border:2px solid var(--line-strong);
+  border-radius:12px;
+  background:#fffdf8;
+  color:#1f2937;
+  font-size:2rem;
+  box-shadow:0 5px 0 rgba(0,0,0,.16);
+}
+.die.back{background:#ffe59a;font-size:1.4rem;}
+.current-bid{
+  border:2px solid rgba(255,255,255,.55);
+  border-radius:14px;
+  background:rgba(255,255,255,.18);
+  color:#fff;
+  padding:10px;
+  text-align:center;
+  font-weight:1000;
+}
+.liar-bid-controls{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.liar-bid-controls label{background:#fff;padding:10px;border:2px solid var(--line);border-radius:14px;}
+.liar-bid-controls select{border:2px solid var(--line);border-radius:12px;padding:10px;background:#fff;font:inherit;font-weight:900;}
+@media(max-width:620px){
+  .play-card{width:50px;height:70px;border-radius:9px;}
+  .play-card strong{font-size:1.5rem;}
+  .card-table,.dice-table{padding:10px;gap:10px;border-radius:18px;}
+  .hand-block{padding:8px;border-radius:14px;}
+  .card-hand,.dice-row{gap:6px;min-height:72px;}
+  .card-actions{grid-template-columns:1fr;}
+  .die{width:46px;height:46px;font-size:1.7rem;}
+}

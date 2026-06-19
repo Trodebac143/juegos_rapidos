@@ -1,4 +1,4 @@
-// PARTIDA RAPIDA - VERSION 7.9.0 CUATRO EN RAYA + SALAS
+// PARTIDA RAPIDA - VERSION 8.5.0 CARTAS + MENTIROSO + TRES EN RAYA CON MOVIMIENTO
 const STORAGE_USERS = 'partida_rapida_users_v7';
 const STORAGE_SESSION = 'partida_rapida_session_v7';
 const STORAGE_SCORES = 'partida_rapida_scores_v7';
@@ -17,9 +17,9 @@ const games = [
   { id:'connect4', name:{es:'Cuatro en raya',va:'Quatre en ratlla'}, icon:'🔴🟡', art:'connect-art', desc:{es:'Conecta cuatro fichas antes que tu rival. Rápido, táctico y perfecto para salas.',va:'Connecta quatre fitxes abans que el teu rival. Ràpid, tàctic i perfecte per a sales.'}, active:true, modes:['cpu','room','join'], help:{es:'Cuatro en raya puntúa por victoria, empate y rapidez. En sala juegan dos usuarios por turnos.',va:'Quatre en ratlla puntua per victòria, empat i rapidesa. En sala juguen dos usuaris per torns.'} },
   { id:'shooter', name:{es:'Matamarcianos',va:'Matamarcians'}, icon:'🚀👾', art:'shooter-art', desc:{es:'Arcade espacial local contra CPU. Destruye oleadas, recoge bombas y derrota al jefe final de cada pantalla.',va:'Arcade espacial local contra CPU. Destruïx onades, arreplega bombes i derrota el cap final de cada pantalla.'}, active:true, modes:['cpu'], help:{es:'Matamarcianos puntúa por enemigos, jefes finales, vidas conservadas y pantallas superadas. Las bombas aparecen al azar al destruir marcianos.',va:'Matamarcians puntua per enemics, caps finals, vides conservades i pantalles superades. Les bombes apareixen a l’atzar en destruir marcians.'} },
   { id:'memory', name:{es:'Memory',va:'Memory'}, icon:'⭐❔', art:'memory-art', desc:{es:'Encuentra parejas antes de gastar demasiados movimientos. Partida corta, visual y perfecta para ranking.',va:'Troba parelles abans de gastar massa moviments. Partida curta, visual i perfecta per a rànquing.'}, active:true, modes:['cpu'], help:{es:'Memory puntúa por parejas encontradas, pocos movimientos y rapidez. Es modo individual por ranking.',va:'Memory puntua per parelles trobades, pocs moviments i rapidesa. És mode individual per rànquing.'} },
-  { id:'liar', name:{es:'Mentiroso',va:'Mentider'}, icon:'🎲🤥', art:'liar-art', desc:{es:'Juego de dados y faroles. Ideal para salas online cuando esté activado.',va:'Joc de daus i farols. Ideal per a sales en línia quan estiga activat.'}, active:false, modes:[], help:{es:'Pendiente de desarrollo. Es uno de los siguientes candidatos por ser rápido y adictivo.',va:'Pendent de desenvolupament. És un dels pròxims candidats perquè és ràpid i addictiu.'} },
-  { id:'blackjack', name:{es:'Blackjack',va:'Blackjack'}, icon:'🂡21', art:'card-art', desc:{es:'Cartas rápidas contra banca. Llegar a 21 sin pasarse.',va:'Cartes ràpides contra banca. Arribar a 21 sense passar-se.'}, active:false, modes:[], help:{es:'Pendiente de desarrollo.',va:'Pendent de desenvolupament.'} },
-  { id:'sieteymedio', name:{es:'Siete y medio',va:'Set i mig'}, icon:'🃏7½', art:'card-art', desc:{es:'Clásico de baraja española contra banca.',va:'Clàssic de baralla espanyola contra banca.'}, active:false, modes:[], help:{es:'Pendiente de desarrollo.',va:'Pendent de desenvolupament.'} },
+  { id:'liar', name:{es:'Mentiroso',va:'Mentider'}, icon:'🎲🤥', art:'liar-art', desc:{es:'Dados, faroles y apuestas contra la CPU. Sube la apuesta o acusa cuando creas que miente.',va:'Daus, farols i apostes contra la CPU. Puja l’aposta o acusa quan cregues que mentix.'}, active:true, modes:['cpu'], help:{es:'Mentiroso funciona ahora contra CPU. Las salas quedan desactivadas hasta una fase posterior.',va:'Mentider funciona ara contra CPU. Les sales queden desactivades fins a una fase posterior.'} },
+  { id:'blackjack', name:{es:'Blackjack',va:'Blackjack'}, icon:'🂡21', art:'card-art', desc:{es:'Cartas rápidas contra la banca. Pide, plántate y busca el 21 sin pasarte.',va:'Cartes ràpides contra la banca. Demana, planta’t i busca el 21 sense passar-te.'}, active:true, modes:['cpu'], help:{es:'Blackjack puntúa por ganar manos contra la banca. Las salas quedan desactivadas por ahora.',va:'Blackjack puntua per guanyar mans contra la banca. Les sales queden desactivades de moment.'} },
+  { id:'sieteymedio', name:{es:'Siete y medio',va:'Set i mig'}, icon:'🃏7½', art:'card-art', desc:{es:'Clásico de baraja española contra la banca. Las figuras valen medio punto.',va:'Clàssic de baralla espanyola contra la banca. Les figures valen mig punt.'}, active:true, modes:['cpu'], help:{es:'Siete y medio puntúa por ganar manos, acercarte a 7½ y enlazar rachas.',va:'Set i mig puntua per guanyar mans, acostar-te a 7½ i encadenar ratxes.'} },
   { id:'generala', name:{es:'Generala',va:'Generala'}, icon:'🎲🎲', art:'dice-art', desc:{es:'Dados, combinaciones y ranking. Partidas cortas por puntuación.',va:'Daus, combinacions i rànquing. Partides curtes per puntuació.'}, active:false, modes:[], help:{es:'Pendiente de desarrollo.',va:'Pendent de desenvolupament.'} },
   { id:'parchis', name:{es:'Parchís',va:'Parxís'}, icon:'🎲', art:'parchis-art', desc:{es:'Partidas por sala para hasta 4 jugadores.',va:'Partides per sala per a fins a 4 jugadors.'}, active:false, modes:[], help:{es:'Ranking pendiente.',va:'Rànquing pendent.'} }
 ];
@@ -37,7 +37,7 @@ const achievements = [
 ];
 
 const $ = (id) => document.getElementById(id);
-const screens = { auth:$('authScreen'), home:$('homeScreen'), gameDetail:$('gameDetailScreen'), pong:$('pongScreen'), snake:$('snakeScreen'), tictac:$('tictacScreen'), memory:$('memoryScreen'), connect4:$('connect4Screen'), shooter:$('shooterScreen') };
+const screens = { auth:$('authScreen'), home:$('homeScreen'), gameDetail:$('gameDetailScreen'), pong:$('pongScreen'), snake:$('snakeScreen'), tictac:$('tictacScreen'), memory:$('memoryScreen'), connect4:$('connect4Screen'), shooter:$('shooterScreen'), blackjack:$('blackjackScreen'), sieteymedio:$('sieteymedioScreen'), liar:$('liarScreen') };
 let currentUser = null;
 let activeRanking = 'pong';
 let selectedGameId = null;
@@ -50,6 +50,9 @@ let tic = null;
 let memory = null;
 let connect4 = null;
 let shooter = null;
+let blackjack = null;
+let siete = null;
+let liar = null;
 let roomPollTimer = null;
 let pongRoomSyncTimer = null;
 let ticRoomSyncTimer = null;
@@ -76,7 +79,7 @@ function normalizeCloudPlayer(player){
 function cloudSessionToken(){ return currentUser?.sessionToken || currentUser?.session_token || null; }
 const i18n = {
   es:{
-    loginTab:'Entrar', registerTab:'Nuevo jugador', user:'Usuario', newUser:'Nuevo usuario', pin:'Contraseña', lang:'Idioma', langToggle:'CAS/VAL', enter:'Entrar', createPlayer:'Crear jugador', chooseAvatar:'Elige tu avatar', authHint:'Si ya tienes jugador, entra con tu usuario y PIN de 4 cifras.', registerHint:'El PIN se guarda protegido en Supabase y no se muestra en claro.', brandOverline:'Juegos de siempre', brandText:'Entra, elige un juego clásico y echa una partida corta en cualquier momento.', badge1:'Sin instalación', badge2:'PIN de 4 cifras', badge3:'Ranking', mainScreen:'Pantalla principal', hello:'Hola', logout:'Salir', heroTitle:'¿Echamos una partida?', heroText:'Pong, Serpiente, Tres en raya, Memory, Cuatro en raya y Matamarcianos están activos.', quickPlay:'🎮 Jugar ahora', sound:'Sonido', off:'OFF', on:'ON', player:'Jugador', games:'Juegos disponibles', quickGames:'Partidas rápidas', openGame:'Entrar', gameData:'Datos del juego', availableModes:'Modos disponibles', roomsDisabled:'Salas desactivadas por ahora', rankingByGame:'Ranking por juego', top10:'Top 10', weekly:'Semanal', all:'Histórico', achievements:'Logros', gamesCount:'Partidas', points:'Puntos', bestGame:'Mejor juego', streak:'Racha', level:'Nivel', novice:'Novato', fan:'Aficionado', fast:'Rápido', master:'Maestro', legend:'Leyenda', cpu:'CPU', playCpu:'Jugar contra CPU', createRoom:'Crear sala', enterCode:'Introducir código', roomCode:'Código de sala', enterRoom:'Entrar en sala', coming:'🔒 Próximamente', soon:'En breve más juegos…', noGames:'Sin partidas', thisWeek:'Esta semana', historical:'Histórico', scoreSystem:'Sistema de puntos', rankingPending:'Ranking pendiente.', pongOver:'Pong contra CPU', pongTitle:'{player} vs CPU', pause:'Pausa', back:'Volver', difficulty:'Dificultad', fail:'FALLO', point:'PUNTO', paused:'PAUSA', snakeOver:'Serpiente', snakeTitle:'Come, crece y aguanta', restart:'Reiniciar', speed:'Velocidad', length:'Longitud', pongHint:'Gana quien llega antes a 5 puntos. PC: teclas ← → o ratón. Móvil: botones inferiores o tocar la pantalla.', snakeHint:'PC: flechas. Móvil: botones. La velocidad aumenta cuanto más aguantas.', ticOver:'Tres en raya contra CPU', ticTitle:'Jugador ❌ vs CPU ⭕', newRound:'Nueva ronda', rounds:'Rondas', yourTurn:'Te toca. Elige una casilla.', cpuThinking:'Piensa la CPU...', ticHint:'La CPU mejora con las rondas, pero en niveles bajos también puede fallar.', memoryOver:'Memory', memoryTitle:'Encuentra las parejas', moves:'Movimientos', pairs:'Parejas', memoryHint:'Toca dos cartas. Si coinciden, quedan descubiertas. Menos movimientos y menos tiempo dan más puntos.', result:'Resultado', accept:'Aceptar', newGame:'Partida nueva', menu:'Salir al menú principal', lostMaster:'Has perdido. Se te asignan 2 puntos de consolación.', wonMaster:'Has ganado. ¡Enhorabuena!', totalSaved:'Total guardado: {points} puntos.', roomCreated:'Sala creada por {user}. Comparte este código:', copy:'Copiar', share:'Compartir', roomReal:'Sala online experimental con Supabase.', roomNotFound:'Sala no encontrada', roomNotFoundText:'Comprueba el código. La sala debe estar creada en Supabase y seguir esperando invitado.', ownCode:'Código propio', ownCodeText:'Has introducido el código de tu propia sala. Pásaselo a otro usuario.', playerJoined:'Jugador unido', playerJoinedText:'Te has unido a la sala {code}. La partida online real se conectará después.', codeCopied:'Código copiado', inviteCopied:'Invitación copiada', roomInvite:'Únete a mi sala de {game} en Partida Rápida. Código: {code}', invalidLogin:'Usuario o contraseña incorrectos.', userExists:'Ese usuario ya existe. Elige otro.', userLength:'El usuario debe tener entre 3 y 18 caracteres.', userChars:'Usa solo letras, números, guion o guion bajo. Sin espacios.', userBad:'Ese nombre de usuario no está permitido.', pinBad:'La contraseña debe ser un número de 4 cifras.', unlocked:'Logro desbloqueado', consolationDetail:'Consolación', winDetail:'Victoria', draw:'Empate', drawText:'Empate. Se guarda la puntuación y puedes jugar otra ronda.', cpuAvatar:'Avatar exclusivo de la CPU', firstTo5:'Gana quien llega antes a 5 puntos', waitingGuest:'Esperando a otro jugador…', roomPlayerJoined:'Jugador conectado. La sala empieza ahora.', roomOnline:'Sala online experimental con Supabase. Mantén esta pantalla abierta hasta que se una otro jugador.', onlineRoom:'Sala online', host:'Anfitrión', guest:'Invitado', connected:'Conectado', syncWarning:'Modo online experimental: puede ir algo menos fluido que contra CPU.', roomWin:'Has ganado la sala de Pong.', roomLoss:'Has perdido la sala de Pong. Se te asignan 2 puntos de consolación.', ticRoomOver:'Tres en raya online', ticRoomTitle:'Sala de Tres en raya', opponentTurn:'Turno del rival. Espera su jugada.', ticRoomWin:'Has ganado la sala de Tres en raya.', ticRoomLoss:'Has perdido la sala de Tres en raya. Se te asignan 2 puntos de consolación.', ticRoomDraw:'Empate en la sala de Tres en raya.', connect4Over:'Cuatro en raya', connect4Title:'Conecta cuatro fichas', connect4Hint:'Toca una columna para soltar ficha. Contra CPU o por sala online experimental.', connect4RoomOver:'Cuatro en raya online', connect4RoomWin:'Has ganado la sala de Cuatro en raya.', connect4RoomLoss:'Has perdido la sala de Cuatro en raya. Se te asignan 2 puntos de consolación.', connect4RoomDraw:'Empate en la sala de Cuatro en raya.', chooseColumn:'Te toca. Elige una columna.', fullColumn:'Columna llena. Elige otra.', countdown:'{num}'
+    loginTab:'Entrar', registerTab:'Nuevo jugador', user:'Usuario', newUser:'Nuevo usuario', pin:'Contraseña', lang:'Idioma', langToggle:'CAS/VAL', enter:'Entrar', createPlayer:'Crear jugador', chooseAvatar:'Elige tu avatar', authHint:'Si ya tienes jugador, entra con tu usuario y PIN de 4 cifras.', registerHint:'El PIN se guarda protegido en Supabase y no se muestra en claro.', brandOverline:'Juegos de siempre', brandText:'Entra, elige un juego clásico y echa una partida corta en cualquier momento.', badge1:'Sin instalación', badge2:'PIN de 4 cifras', badge3:'Ranking', mainScreen:'Pantalla principal', hello:'Hola', logout:'Salir', heroTitle:'¿Echamos una partida?', heroText:'Pong, Serpiente, Tres en raya, Memory, Cuatro en raya y Matamarcianos, Blackjack, Siete y medio y Mentiroso están activos.', quickPlay:'🎮 Jugar ahora', sound:'Sonido', off:'OFF', on:'ON', player:'Jugador', games:'Juegos disponibles', quickGames:'Partidas rápidas', openGame:'Entrar', gameData:'Datos del juego', availableModes:'Modos disponibles', roomsDisabled:'Salas desactivadas por ahora', rankingByGame:'Ranking por juego', top10:'Top 10', weekly:'Semanal', all:'Histórico', achievements:'Logros', gamesCount:'Partidas', points:'Puntos', bestGame:'Mejor juego', streak:'Racha', level:'Nivel', novice:'Novato', fan:'Aficionado', fast:'Rápido', master:'Maestro', legend:'Leyenda', cpu:'CPU', playCpu:'Jugar contra CPU', createRoom:'Crear sala', enterCode:'Introducir código', roomCode:'Código de sala', enterRoom:'Entrar en sala', coming:'🔒 Próximamente', soon:'En breve más juegos…', noGames:'Sin partidas', thisWeek:'Esta semana', historical:'Histórico', scoreSystem:'Sistema de puntos', rankingPending:'Ranking pendiente.', pongOver:'Pong contra CPU', pongTitle:'{player} vs CPU', pause:'Pausa', back:'Volver', difficulty:'Dificultad', fail:'FALLO', point:'PUNTO', paused:'PAUSA', snakeOver:'Serpiente', snakeTitle:'Come, crece y aguanta', restart:'Reiniciar', speed:'Velocidad', length:'Longitud', pongHint:'Gana quien llega antes a 5 puntos. PC: teclas ← → o ratón. Móvil: botones inferiores o tocar la pantalla.', snakeHint:'PC: flechas. Móvil: botones. La velocidad aumenta cuanto más aguantas.', ticOver:'Tres en raya contra CPU', ticTitle:'Jugador ❌ vs CPU ⭕', newRound:'Nueva ronda', rounds:'Rondas', yourTurn:'Te toca. Elige una casilla.', cpuThinking:'Piensa la CPU...', ticHint:'La CPU mejora con las rondas, pero en niveles bajos también puede fallar.', memoryOver:'Memory', memoryTitle:'Encuentra las parejas', moves:'Movimientos', pairs:'Parejas', memoryHint:'Toca dos cartas. Si coinciden, quedan descubiertas. Menos movimientos y menos tiempo dan más puntos.', result:'Resultado', accept:'Aceptar', newGame:'Partida nueva', menu:'Salir al menú principal', lostMaster:'Has perdido. Se te asignan 2 puntos de consolación.', wonMaster:'Has ganado. ¡Enhorabuena!', totalSaved:'Total guardado: {points} puntos.', roomCreated:'Sala creada por {user}. Comparte este código:', copy:'Copiar', share:'Compartir', roomReal:'Sala online experimental con Supabase.', roomNotFound:'Sala no encontrada', roomNotFoundText:'Comprueba el código. La sala debe estar creada en Supabase y seguir esperando invitado.', ownCode:'Código propio', ownCodeText:'Has introducido el código de tu propia sala. Pásaselo a otro usuario.', playerJoined:'Jugador unido', playerJoinedText:'Te has unido a la sala {code}. La partida online real se conectará después.', codeCopied:'Código copiado', inviteCopied:'Invitación copiada', roomInvite:'Únete a mi sala de {game} en Partida Rápida. Código: {code}', invalidLogin:'Usuario o contraseña incorrectos.', userExists:'Ese usuario ya existe. Elige otro.', userLength:'El usuario debe tener entre 3 y 18 caracteres.', userChars:'Usa solo letras, números, guion o guion bajo. Sin espacios.', userBad:'Ese nombre de usuario no está permitido.', pinBad:'La contraseña debe ser un número de 4 cifras.', unlocked:'Logro desbloqueado', consolationDetail:'Consolación', winDetail:'Victoria', draw:'Empate', drawText:'Empate. Se guarda la puntuación y puedes jugar otra ronda.', cpuAvatar:'Avatar exclusivo de la CPU', firstTo5:'Gana quien llega antes a 5 puntos', waitingGuest:'Esperando a otro jugador…', roomPlayerJoined:'Jugador conectado. La sala empieza ahora.', roomOnline:'Sala online experimental con Supabase. Mantén esta pantalla abierta hasta que se una otro jugador.', onlineRoom:'Sala online', host:'Anfitrión', guest:'Invitado', connected:'Conectado', syncWarning:'Modo online experimental: puede ir algo menos fluido que contra CPU.', roomWin:'Has ganado la sala de Pong.', roomLoss:'Has perdido la sala de Pong. Se te asignan 2 puntos de consolación.', ticRoomOver:'Tres en raya online', ticRoomTitle:'Sala de Tres en raya', opponentTurn:'Turno del rival. Espera su jugada.', ticRoomWin:'Has ganado la sala de Tres en raya.', ticRoomLoss:'Has perdido la sala de Tres en raya. Se te asignan 2 puntos de consolación.', ticRoomDraw:'Empate en la sala de Tres en raya.', connect4Over:'Cuatro en raya', connect4Title:'Conecta cuatro fichas', connect4Hint:'Toca una columna para soltar ficha. Contra CPU o por sala online experimental.', connect4RoomOver:'Cuatro en raya online', connect4RoomWin:'Has ganado la sala de Cuatro en raya.', connect4RoomLoss:'Has perdido la sala de Cuatro en raya. Se te asignan 2 puntos de consolación.', connect4RoomDraw:'Empate en la sala de Cuatro en raya.', chooseColumn:'Te toca. Elige una columna.', fullColumn:'Columna llena. Elige otra.', countdown:'{num}'
   },
   va:{
     loginTab:'Entrar', registerTab:'Nou jugador', user:'Usuari', newUser:'Nou usuari', pin:'Contrasenya', lang:'Idioma', langToggle:'CAS/VAL', enter:'Entrar', createPlayer:'Crear jugador', chooseAvatar:'Tria el teu avatar', authHint:'Si ja tens jugador, entra amb el teu usuari i PIN de 4 xifres.', registerHint:'El PIN es guarda protegit en Supabase i no es mostra en clar.', brandOverline:'Jocs de sempre', brandText:'Entra, tria un joc clàssic i juga una partida curta en qualsevol moment.', badge1:'Sense instal·lació', badge2:'PIN de 4 xifres', badge3:'Rànquing', mainScreen:'Pantalla principal', hello:'Hola', logout:'Eixir', heroTitle:'Fem una partida?', heroText:'Pong, Serp, Tres en ratlla, Memory i Quatre en ratlla estan actius. En breu més jocs…', quickPlay:'🎮 Jugar ara', sound:'So', off:'OFF', on:'ON', player:'Jugador', games:'Jocs disponibles', quickGames:'Partides ràpides', openGame:'Entrar', gameData:'Dades del joc', availableModes:'Modes disponibles', roomsDisabled:'Sales desactivades de moment', rankingByGame:'Rànquing per joc', top10:'Top 10', weekly:'Setmanal', all:'Històric', achievements:'Assoliments', gamesCount:'Partides', points:'Punts', bestGame:'Millor joc', streak:'Ratxa', level:'Nivell', novice:'Novell', fan:'Aficionat', fast:'Ràpid', master:'Mestre', legend:'Llegenda', cpu:'CPU', playCpu:'Jugar contra CPU', createRoom:'Crear sala', enterCode:'Introduir codi', roomCode:'Codi de sala', enterRoom:'Entrar en sala', coming:'🔒 Pròximament', soon:'En breu més jocs…', noGames:'Sense partides', thisWeek:'Esta setmana', historical:'Històric', scoreSystem:'Sistema de punts', rankingPending:'Rànquing pendent.', pongOver:'Pong contra CPU', pongTitle:'{player} contra CPU', pause:'Pausa', back:'Tornar', difficulty:'Dificultat', fail:'FALLADA', point:'PUNT', paused:'PAUSA', snakeOver:'Serp', snakeTitle:'Menja, creix i aguanta', restart:'Reiniciar', speed:'Velocitat', length:'Longitud', pongHint:'Guanya qui arriba abans a 5 punts. PC: tecles ← → o ratolí. Mòbil: botons inferiors o tocar la pantalla.', snakeHint:'PC: fletxes. Mòbil: botons. La velocitat augmenta com més aguantes.', ticOver:'Tres en ratlla contra CPU', ticTitle:'Jugador ❌ contra CPU ⭕', newRound:'Nova ronda', rounds:'Rondes', yourTurn:'Et toca. Tria una casella.', cpuThinking:'La CPU pensa...', ticHint:'La CPU millora amb les rondes, però en nivells baixos també pot fallar.', memoryOver:'Memory', memoryTitle:'Troba les parelles', moves:'Moviments', pairs:'Parelles', memoryHint:'Toca dues cartes. Si coincidixen, queden descobertes. Menys moviments i menys temps donen més punts.', result:'Resultat', accept:'Acceptar', newGame:'Partida nova', menu:'Eixir al menú principal', lostMaster:'Has perdut. Se t’assignen 2 punts de consolació.', wonMaster:'Has guanyat. Enhorabona!', totalSaved:'Total guardat: {points} punts.', roomCreated:'Sala creada per {user}. Compartix este codi:', copy:'Copiar', share:'Compartir', roomReal:'Sala en línia experimental amb Supabase.', roomNotFound:'Sala no trobada', roomNotFoundText:'Comprova el codi. La sala ha d’estar creada en Supabase i continuar esperant convidat.', ownCode:'Codi propi', ownCodeText:'Has introduït el codi de la teua pròpia sala. Passa-li’l a un altre usuari.', playerJoined:'Jugador unit', playerJoinedText:'T’has unit a la sala {code}. La partida en línia real es connectarà després.', codeCopied:'Codi copiat', inviteCopied:'Invitació copiada', roomInvite:'Unix-te a la meua sala de {game} en Partida Rápida. Codi: {code}', invalidLogin:'Usuari o contrasenya incorrectes.', userExists:'Eixe usuari ja existix. Tria’n un altre.', userLength:'L’usuari ha de tindre entre 3 i 18 caràcters.', userChars:'Usa només lletres, números, guionet o guionet baix. Sense espais.', userBad:'Eixe nom d’usuari no està permés.', pinBad:'La contrasenya ha de ser un número de 4 xifres.', unlocked:'Assoliment desbloquejat', consolationDetail:'Consolació', winDetail:'Victòria', draw:'Empat', drawText:'Empat. Es guarda la puntuació i pots jugar una altra ronda.', cpuAvatar:'Avatar exclusiu de la CPU', firstTo5:'Guanya qui arriba abans a 5 punts', waitingGuest:'Esperant un altre jugador…', roomPlayerJoined:'Jugador connectat. La sala comença ara.', roomOnline:'Sala en línia experimental amb Supabase. Mantín esta pantalla oberta fins que s’unisca un altre jugador.', onlineRoom:'Sala en línia', host:'Amfitrió', guest:'Convidat', connected:'Connectat', syncWarning:'Mode en línia experimental: pot anar un poc menys fluid que contra CPU.', roomWin:'Has guanyat la sala de Pong.', roomLoss:'Has perdut la sala de Pong. Se t’assignen 2 punts de consolació.', ticRoomOver:'Tres en ratlla en línia', ticRoomTitle:'Sala de Tres en ratlla', opponentTurn:'Torn del rival. Espera la seua jugada.', ticRoomWin:'Has guanyat la sala de Tres en ratlla.', ticRoomLoss:'Has perdut la sala de Tres en ratlla. Se t’assignen 2 punts de consolació.', ticRoomDraw:'Empat en la sala de Tres en ratlla.', connect4Over:'Quatre en ratlla', connect4Title:'Connecta quatre fitxes', connect4Hint:'Toca una columna per a soltar fitxa. Contra CPU o per sala en línia experimental.', connect4RoomOver:'Quatre en ratlla en línia', connect4RoomWin:'Has guanyat la sala de Quatre en ratlla.', connect4RoomLoss:'Has perdut la sala de Quatre en ratlla. Se t’assignen 2 punts de consolació.', connect4RoomDraw:'Empat en la sala de Quatre en ratlla.', chooseColumn:'Et toca. Tria una columna.', fullColumn:'Columna plena. Tria’n una altra.', countdown:'{num}'
@@ -159,7 +162,7 @@ function renderAvatarPicker(){
 }
 function setVisibleAvatars(){
   const av = avatarFor(currentUser);
-  ['topAvatar','heroAvatar','profileAvatar','detailAvatar','pongAvatar','snakeAvatar','ticAvatar','memoryAvatar','connect4Avatar','shooterAvatar'].forEach(id => { const el=$(id); if(el) el.textContent = av; });
+  ['topAvatar','heroAvatar','profileAvatar','detailAvatar','pongAvatar','snakeAvatar','ticAvatar','memoryAvatar','connect4Avatar','shooterAvatar','blackjackAvatar','sieteAvatar','liarAvatar'].forEach(id => { const el=$(id); if(el) el.textContent = av; });
 }
 function seedDemoRanking(){
   if(getJson(STORAGE_SCORES, []).length) return;
@@ -211,7 +214,7 @@ function gameButtons(g){
   const cpu = g.modes.includes('cpu') ? `<button class="primary-btn" type="button" data-action="cpu" data-game="${g.id}">${t('playCpu')}</button>` : '';
   const room = g.modes.includes('room') ? `<button class="secondary-btn" type="button" data-action="room" data-game="${g.id}">${t('createRoom')}</button>` : '';
   const join = g.modes.includes('join') ? `<button class="secondary-btn" type="button" data-action="join" data-game="${g.id}">${t('enterCode')}</button>` : '';
-  const disabledRooms = g.id === 'pong' ? `<span class="pill">${t('roomsDisabled')}</span>` : '';
+  const disabledRooms = ['pong','blackjack','sieteymedio','liar'].includes(g.id) ? `<span class="pill">${t('roomsDisabled')}</span>` : '';
   return cpu + room + join + disabledRooms;
 }
 function renderRankingTabs(){
@@ -444,8 +447,8 @@ function updateGameLabels(){
   set('memoryOverline', t('memoryOver')); set('memoryTitle', t('memoryTitle')); set('memoryPointsSmall', t('points')); set('memoryMovesSmall', t('moves')); set('memoryPairsSmall', t('pairs')); set('memoryHint', t('memoryHint'));
   set('connect4Overline', t('connect4Over')); set('connect4Title', t('connect4Title')); set('connect4PointsSmall', t('points')); set('connect4DifficultyLabel', t('difficulty')); set('connect4RoundsSmall', t('rounds')); set('connect4Hint', t('connect4Hint')); if(connect4 && connect4.mode==='room'){ set('connect4Overline', t('connect4RoomOver')); set('connect4Hint', t('syncWarning')); }
 }
-function startGame(gameId){ if(gameId==='pong') startPong(); if(gameId==='snake') startSnake(); if(gameId==='tictac') startTicTac(); if(gameId==='memory') startMemory(); if(gameId==='connect4') startConnect4(); if(gameId==='shooter') startShooter(); }
-function stopAllGames(){ clearRoomPoll(); clearPongRoomSync(); stopPong(); stopSnake(); stopTicTac(); stopMemory(); stopConnect4(); stopShooter(); }
+function startGame(gameId){ if(gameId==='pong') startPong(); if(gameId==='snake') startSnake(); if(gameId==='tictac') startTicTac(); if(gameId==='memory') startMemory(); if(gameId==='connect4') startConnect4(); if(gameId==='shooter') startShooter(); if(gameId==='blackjack') startBlackjack(); if(gameId==='sieteymedio') startSiete(); if(gameId==='liar') startLiar(); }
+function stopAllGames(){ clearRoomPoll(); clearPongRoomSync(); stopPong(); stopSnake(); stopTicTac(); stopMemory(); stopConnect4(); stopShooter(); stopBlackjack(); stopSiete(); stopLiar(); }
 function flash(id, text){
   const el = $(id); el.textContent = text; el.classList.remove('hidden'); void el.offsetWidth; el.classList.add('hidden');
   setTimeout(()=>el.classList.remove('hidden'), 10); setTimeout(()=>el.classList.add('hidden'), 620);
@@ -848,16 +851,20 @@ function finishConnect4RoomFromState(st){
 }
 
 // TRES EN RAYA
-function startTicTac(){ stopAllGames(); setVisibleAvatars(); switchScreen('tictac'); tic={mode:'cpu',board:Array(9).fill(''),locked:false,rounds:0,points:0,level:1,started:performance.now()}; updateGameLabels(); renderTicBoard(); newTicRound(); }
+function startTicTac(){
+  stopAllGames(); setVisibleAvatars(); switchScreen('tictac');
+  tic={mode:'cpu',board:Array(9).fill(''),locked:false,rounds:0,points:0,level:1,started:performance.now(),phase:'place',selected:null};
+  updateGameLabels(); renderTicBoard(); newTicRound();
+}
 function startTicRoom(room, role){
   stopAllGames(); setVisibleAvatars(); switchScreen('tictac');
-  tic={mode:'room',role,roomCode:room.code,board:Array(9).fill(''),locked:false,rounds:0,points:0,level:1,started:performance.now(),scoreSaved:false,hostUsername:room.host_username,guestUsername:room.guest_username};
+  tic={mode:'room',role,roomCode:room.code,board:Array(9).fill(''),locked:false,rounds:0,points:0,level:1,started:performance.now(),scoreSaved:false,hostUsername:room.host_username,guestUsername:room.guest_username,phase:'place',selected:null};
   updateGameLabels();
   $('ticOverline').textContent = t('ticRoomOver');
   $('ticTitle').textContent = `${room.host_username || t('host')} ❌ vs ${room.guest_username || t('guest')} ⭕`;
   const st = normalizeTicState(room.state);
   if(role === 'host' && (!room.state || !Array.isArray(room.state.board))){
-    updateTicRoomState(makeTicState(Array(9).fill(''), 'host', 'playing')).catch(console.warn);
+    updateTicRoomState(makeTicState(Array(9).fill(''), 'host', 'playing', {phase:'place'})).catch(console.warn);
   }
   applyTicRoomState(st);
   startTicRoomSync();
@@ -867,99 +874,150 @@ function clearTicRoomSync(){ if(ticRoomSyncTimer){ clearInterval(ticRoomSyncTime
 function startTicRoomSync(){ clearTicRoomSync(); ticRoomSyncTimer=setInterval(syncTicRoom, 1200); }
 async function syncTicRoom(){
   if(!tic || tic.mode!=='room' || !cloudEnabled() || !cloudSessionToken()) return;
-  try{
-    const room = await window.PartidaRapidaSupabase.getRoom(cloudSessionToken(), tic.roomCode);
-    if(room?.ok){ tic.hostUsername=room.host_username; tic.guestUsername=room.guest_username; applyTicRoomState(normalizeTicState(room.state)); }
-  }catch(err){ console.warn('No se pudo sincronizar Tres en raya online.', err); }
+  try{ const room = await window.PartidaRapidaSupabase.getRoom(cloudSessionToken(), tic.roomCode); if(room?.ok){ tic.hostUsername=room.host_username; tic.guestUsername=room.guest_username; applyTicRoomState(normalizeTicState(room.state)); } }catch(err){ console.warn('No se pudo sincronizar Tres en raya online.', err); }
 }
 function normalizeTicState(st){
   st = st || {};
   const board = Array.isArray(st.board) && st.board.length===9 ? st.board.map(v => v==='❌'||v==='⭕'?v:'') : Array(9).fill('');
-  return { board, turn: st.turn==='guest'?'guest':'host', status: st.status || 'playing', winnerRole: st.winnerRole || null, result: st.result || null, line: Array.isArray(st.line)?st.line:[] };
+  return { board, turn: st.turn==='guest'?'guest':'host', status: st.status || 'playing', winnerRole: st.winnerRole || null, result: st.result || null, line: Array.isArray(st.line)?st.line:[], phase: st.phase==='move'?'move':'place' };
 }
-function makeTicState(board, turn, status='playing', extra={}){ return {board, turn, status, ...extra}; }
-async function updateTicRoomState(state, status){
-  return await window.PartidaRapidaSupabase.updateRoomState(cloudSessionToken(), tic.roomCode, state, status || state.status || 'playing');
-}
+function makeTicState(board, turn, status='playing', extra={}){ return {board, turn, status, phase:extra.phase || ticPhaseForBoard(board), ...extra}; }
+async function updateTicRoomState(state, status){ return await window.PartidaRapidaSupabase.updateRoomState(cloudSessionToken(), tic.roomCode, state, status || state.status || 'playing'); }
 function applyTicRoomState(st){
   if(!tic || tic.mode!=='room') return;
-  tic.board = st.board;
+  tic.board = st.board; tic.phase = st.phase || ticPhaseForBoard(st.board); tic.selected = null;
   tic.locked = st.status === 'finished' || st.turn !== tic.role;
-  renderTicBoard(st.line || []);
-  updateTicHud();
+  renderTicBoard(st.line || []); updateTicHud();
   if(st.status === 'finished') return finishTicRoomFromState(st);
-  $('ticStatus').textContent = st.turn === tic.role ? t('yourTurn') : t('opponentTurn');
+  $('ticStatus').textContent = st.turn === tic.role ? ticPlayerStatus() : t('opponentTurn');
 }
 function resetTicRoomRound(){
   if(!tic || tic.mode!=='room') return startTicTac();
-  tic.scoreSaved=false;
-  const state = makeTicState(Array(9).fill(''), 'host', 'playing', {result:null,winnerRole:null,line:[]});
-  applyTicRoomState(state);
-  updateTicRoomState(state, 'playing').catch(err=>showModal(t('roomNotFound'), err?.message || t('roomNotFoundText')));
+  tic.scoreSaved=false; tic.selected=null;
+  const state = makeTicState(Array(9).fill(''), 'host', 'playing', {result:null,winnerRole:null,line:[],phase:'place'});
+  applyTicRoomState(state); updateTicRoomState(state, 'playing').catch(err=>showModal(t('roomNotFound'), err?.message || t('roomNotFoundText')));
 }
 function newTicRound(){
-  if(!tic) return;
-  if(tic.mode==='room') return resetTicRoomRound();
-  tic.board=Array(9).fill(''); tic.locked=false; tic.started=performance.now(); tic.level=1+Math.floor(tic.rounds/2); $('ticStatus').textContent=t('yourTurn'); updateTicHud(); renderTicBoard();
+  if(!tic) return; if(tic.mode==='room') return resetTicRoomRound();
+  tic.board=Array(9).fill(''); tic.locked=false; tic.selected=null; tic.phase='place'; tic.started=performance.now(); tic.level=1+Math.floor(tic.rounds/2);
+  $('ticStatus').textContent=ticPlayerStatus(); updateTicHud(); renderTicBoard();
 }
-function updateTicHud(){ if(!tic) return; $('ticPoints').textContent=tic.points; $('ticRounds').textContent=tic.rounds; $('ticLevel').textContent=tic.level; updateGameLabels(); if(tic.mode==='room'){ $('ticOverline').textContent=t('ticRoomOver'); $('ticHint').textContent=t('syncWarning'); } }
-function renderTicBoard(winLine=[]){ const board=$('ticBoard'); board.innerHTML=''; const values = tic ? tic.board : Array(9).fill(''); values.forEach((v,i)=>{ const b=document.createElement('button'); b.className=`tic-cell ${winLine.includes(i)?'win':''}`; b.textContent=v; b.type='button'; b.addEventListener('click',()=>playerTicMove(i)); board.appendChild(b); }); }
+function updateTicHud(){ if(!tic) return; $('ticPoints').textContent=tic.points; $('ticRounds').textContent=tic.rounds; $('ticLevel').textContent=tic.level; updateGameLabels(); if(tic.mode==='room'){ $('ticOverline').textContent=t('ticRoomOver'); $('ticHint').textContent=t('syncWarning'); } else { $('ticHint').textContent='Coloca tus 3 fichas. Después podrás moverlas por turnos hasta conseguir línea.'; } }
+function ticCount(mark, board=tic.board){ return board.filter(v=>v===mark).length; }
+function ticPhaseForBoard(board){ return ticCount('❌', board)>=3 && ticCount('⭕', board)>=3 ? 'move' : 'place'; }
+function ticPlayerStatus(){ if(!tic) return ''; if(tic.phase==='move') return tic.selected===null ? 'Fase de movimiento: selecciona una ficha tuya.' : 'Ahora toca una casilla libre para mover la ficha.'; return 'Fase de colocación: coloca tus 3 fichas.'; }
+function renderTicBoard(winLine=[]){
+  const board=$('ticBoard'); board.innerHTML=''; const values = tic ? tic.board : Array(9).fill('');
+  values.forEach((v,i)=>{ const b=document.createElement('button'); b.className=`tic-cell ${winLine.includes(i)?'win':''} ${tic?.selected===i?'selected':''}`; b.textContent=v; b.type='button'; b.addEventListener('click',()=>playerTicMove(i)); board.appendChild(b); });
+}
 function playerTicMove(i){
-  if(!tic || tic.locked || tic.board[i]) return;
+  if(!tic || tic.locked) return;
   if(tic.mode==='room') return playerTicRoomMove(i);
-  tic.board[i]='❌'; renderTicBoard(); const res=checkTic(); if(res) return finishTic(res); tic.locked=true; $('ticStatus').textContent=t('cpuThinking'); setTimeout(cpuTicMove, 420);
+  if(tic.phase==='place'){
+    if(tic.board[i] || ticCount('❌')>=3) return;
+    tic.board[i]='❌'; renderTicBoard(); const res=checkTic(); if(res) return finishTic(res);
+    tic.phase=ticPhaseForBoard(tic.board); tic.locked=true; $('ticStatus').textContent=t('cpuThinking'); return setTimeout(cpuTicMove, 420);
+  }
+  if(tic.selected===null){ if(tic.board[i]!=='❌') return; tic.selected=i; renderTicBoard(); $('ticStatus').textContent=ticPlayerStatus(); return; }
+  if(i===tic.selected){ tic.selected=null; renderTicBoard(); $('ticStatus').textContent=ticPlayerStatus(); return; }
+  if(tic.board[i]) return;
+  tic.board[i]='❌'; tic.board[tic.selected]=''; tic.selected=null; renderTicBoard(); const res=checkTic(); if(res) return finishTic(res);
+  tic.locked=true; $('ticStatus').textContent=t('cpuThinking'); setTimeout(cpuTicMove, 420);
 }
 async function playerTicRoomMove(i){
-  const mark = tic.role === 'host' ? '❌' : '⭕';
-  const nextTurn = tic.role === 'host' ? 'guest' : 'host';
-  const board = [...tic.board]; board[i]=mark;
-  tic.board=board; tic.locked=true; renderTicBoard(); $('ticStatus').textContent=t('opponentTurn');
-  const res = checkTicBoard(board);
-  let state;
-  if(res){
-    let result = 'draw', winnerRole = null;
-    if(res.winner==='❌'){ result='win'; winnerRole='host'; }
-    if(res.winner==='⭕'){ result='win'; winnerRole='guest'; }
-    state = makeTicState(board, nextTurn, 'finished', {result, winnerRole, line:res.line});
-    await updateTicRoomState(state, 'finished');
-    applyTicRoomState(state);
-  }else{
-    state = makeTicState(board, nextTurn, 'playing');
-    await updateTicRoomState(state, 'playing');
+  const mark = tic.role === 'host' ? '❌' : '⭕'; const nextTurn = tic.role === 'host' ? 'guest' : 'host'; const board=[...tic.board];
+  if(tic.phase==='place'){
+    if(board[i] || ticCount(mark, board)>=3) return;
+    board[i]=mark;
+  } else {
+    if(tic.selected===null){ if(board[i]!==mark) return; tic.selected=i; renderTicBoard(); $('ticStatus').textContent=ticPlayerStatus(); return; }
+    if(i===tic.selected){ tic.selected=null; renderTicBoard(); $('ticStatus').textContent=ticPlayerStatus(); return; }
+    if(board[i]) return; board[i]=mark; board[tic.selected]=''; tic.selected=null;
   }
+  tic.board=board; tic.phase=ticPhaseForBoard(board); tic.locked=true; renderTicBoard(); $('ticStatus').textContent=t('opponentTurn');
+  const res = checkTicBoard(board); let state;
+  if(res){ let result='win', winnerRole=res.winner==='❌'?'host':'guest'; state=makeTicState(board,nextTurn,'finished',{result,winnerRole,line:res.line,phase:tic.phase}); await updateTicRoomState(state,'finished'); applyTicRoomState(state); }
+  else { state=makeTicState(board,nextTurn,'playing',{phase:tic.phase}); await updateTicRoomState(state,'playing'); }
 }
-function cpuTicMove(){ if(!tic) return; const move=chooseCpuMove(); if(move !== -1) tic.board[move]='⭕'; renderTicBoard(); const res=checkTic(); if(res) return finishTic(res); tic.locked=false; $('ticStatus').textContent=t('yourTurn'); }
-function chooseCpuMove(){ const empty=tic.board.map((v,i)=>v?null:i).filter(v=>v!==null); const mistakeChance=clamp(0.38 - tic.level*0.055, 0.08, 0.38); if(Math.random()<mistakeChance){ const m=empty[Math.floor(Math.random()*empty.length)]; setTimeout(()=>{ const cells=[...document.querySelectorAll('.tic-cell')]; if(cells[m]) cells[m].classList.add('fail'); }, 20); return m; } const win=findBestLine('⭕'); if(win!==-1) return win; const block=findBestLine('❌'); if(block!==-1) return block; if(tic.board[4]==='') return 4; const corners=[0,2,6,8].filter(i=>tic.board[i]===''); if(corners.length) return corners[Math.floor(Math.random()*corners.length)]; return empty[Math.floor(Math.random()*empty.length)] ?? -1; }
+function cpuTicMove(){
+  if(!tic) return;
+  tic.phase=ticPhaseForBoard(tic.board);
+  if(tic.phase==='place'){
+    const move=chooseCpuPlacement(); if(move !== -1) tic.board[move]='⭕';
+  } else {
+    const move=chooseCpuSlide(); if(move){ tic.board[move.to]='⭕'; tic.board[move.from]=''; }
+  }
+  renderTicBoard(); const res=checkTic(); if(res) return finishTic(res);
+  tic.phase=ticPhaseForBoard(tic.board); tic.locked=false; $('ticStatus').textContent=ticPlayerStatus();
+}
+function chooseCpuPlacement(){ const empty=tic.board.map((v,i)=>v?null:i).filter(v=>v!==null); const mistakeChance=clamp(0.38 - tic.level*0.055, 0.08, 0.38); if(Math.random()<mistakeChance) return empty[Math.floor(Math.random()*empty.length)] ?? -1; const win=findBestLine('⭕'); if(win!==-1) return win; const block=findBestLine('❌'); if(block!==-1) return block; if(tic.board[4]==='') return 4; const corners=[0,2,6,8].filter(i=>tic.board[i]===''); if(corners.length) return corners[Math.floor(Math.random()*corners.length)]; return empty[Math.floor(Math.random()*empty.length)] ?? -1; }
+function chooseCpuSlide(){
+  const moves=allTicMoves('⭕'); if(!moves.length) return null;
+  const mistakeChance=clamp(0.32 - tic.level*0.045, 0.07, 0.32);
+  if(Math.random()>=mistakeChance){
+    for(const m of moves){ const b=[...tic.board]; b[m.to]='⭕'; b[m.from]=''; if(checkTicBoard(b)?.winner==='⭕') return m; }
+    for(const m of moves){ const b=[...tic.board]; b[m.to]='❌'; b[m.from]=''; if(checkTicBoard(b)?.winner==='❌') return m; }
+  }
+  return moves[Math.floor(Math.random()*moves.length)];
+}
+function allTicMoves(mark){ const own=tic.board.map((v,i)=>v===mark?i:null).filter(v=>v!==null); const empty=tic.board.map((v,i)=>v===''?i:null).filter(v=>v!==null); const moves=[]; own.forEach(from=>empty.forEach(to=>moves.push({from,to}))); return moves; }
 function findBestLine(mark){ const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(const line of lines){ const vals=line.map(i=>tic.board[i]); if(vals.filter(v=>v===mark).length===2 && vals.includes('')) return line[vals.indexOf('')]; } return -1; }
 function checkTic(){ return checkTicBoard(tic.board); }
-function checkTicBoard(board){ const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(const line of lines){ const [a,b,c]=line; if(board[a] && board[a]===board[b] && board[a]===board[c]) return {winner:board[a], line}; } if(board.every(Boolean)) return {winner:'draw', line:[]}; return null; }
+function checkTicBoard(board){ const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(const line of lines){ const [a,b,c]=line; if(board[a] && board[a]===board[b] && board[a]===board[c]) return {winner:board[a], line}; } return null; }
 function finishTic(res){
   tic.locked=true; tic.rounds++;
-  let gained=0, result=''; let title='', msg='';
-  const timeBonus=Math.max(0, 25-Math.floor((performance.now()-tic.started)/1000));
-  if(res.winner==='❌'){ gained=80+tic.level*15+timeBonus; result='win'; title=t('wonMaster'); msg=`${t('wonMaster')} ${t('totalSaved',{points: tic.points + gained})}`; playSound('win'); }
-  else if(res.winner==='⭕'){ gained=2; result='loss'; title=t('result'); msg=`${t('lostMaster')} ${t('totalSaved',{points:gained})}`; playSound('fail'); }
-  else { gained=20; result='draw'; title=t('draw'); msg=`${t('drawText')} ${t('totalSaved',{points: tic.points + gained})}`; playSound('point'); }
-  tic.points = result==='loss' ? gained : tic.points + gained;
-  updateTicHud(); renderTicBoard(res.line);
-  saveScore('tictac', tic.points, result=== 'loss' ? t('consolationDetail') : `${tic.rounds} ${t('rounds').toLowerCase()}`, {result});
-  if(result==='win') awardAchievement('tic_win');
-  setTimeout(()=>{ showResultModal(title, msg, 'tictac'); }, 500);
+  let gained=0, result=''; let title='', msg=''; const timeBonus=Math.max(0,25-Math.floor((performance.now()-tic.started)/1000));
+  if(res.winner==='❌'){ gained=90+tic.level*15+timeBonus; result='win'; title=t('wonMaster'); msg=`${t('wonMaster')} ${t('totalSaved',{points:tic.points+gained})}`; playSound('win'); }
+  else { gained=2; result='loss'; title=t('result'); msg=`${t('lostMaster')} ${t('totalSaved',{points:gained})}`; playSound('fail'); }
+  tic.points = result==='loss' ? gained : tic.points + gained; updateTicHud(); renderTicBoard(res.line); saveScore('tictac', tic.points, result==='loss'?t('consolationDetail'):`${tic.rounds} ${t('rounds').toLowerCase()}`, {result}); if(result==='win') awardAchievement('tic_win'); setTimeout(()=>showResultModal(title,msg,'tictac'),500);
 }
 function finishTicRoomFromState(st){
-  if(!tic || tic.scoreSaved) return;
-  tic.scoreSaved = true; tic.locked=true; renderTicBoard(st.line || []);
-  const won = st.winnerRole === tic.role;
-  const draw = st.result === 'draw' || !st.winnerRole;
-  let gained = draw ? 20 : (won ? 80 : 2);
-  let result = draw ? 'draw' : (won ? 'win' : 'loss');
-  tic.points = gained; updateTicHud();
-  if(won){ playSound('win'); awardAchievement('tic_win'); }
-  else if(draw) playSound('point'); else playSound('fail');
-  saveScore('tictac', gained, draw ? t('draw') : (won ? t('winDetail') : t('consolationDetail')), {result, mode:'room'});
-  const msg = draw ? `${t('ticRoomDraw')} ${t('totalSaved',{points:gained})}` : `${won ? t('ticRoomWin') : t('ticRoomLoss')} ${t('totalSaved',{points:gained})}`;
-  setTimeout(()=>{ showResultModal(draw ? t('draw') : (won ? t('winDetail') : t('result')), msg, 'tictac-room'); }, 500);
+  if(!tic || tic.scoreSaved) return; tic.scoreSaved=true; tic.locked=true; renderTicBoard(st.line || []);
+  const won=st.winnerRole===tic.role; let gained=won?90:2; let result=won?'win':'loss'; tic.points=gained; updateTicHud(); if(won){ playSound('win'); awardAchievement('tic_win'); } else playSound('fail');
+  saveScore('tictac',gained,won?t('winDetail'):t('consolationDetail'),{result,mode:'room'});
+  const msg=`${won ? t('ticRoomWin') : t('ticRoomLoss')} ${t('totalSaved',{points:gained})}`; setTimeout(()=>showResultModal(won?t('winDetail'):t('result'),msg,'tictac-room'),500);
 }
+
+
+// BLACKJACK, SIETE Y MEDIO Y MENTIROSO
+function stopBlackjack(){ blackjack=null; }
+function stopSiete(){ siete=null; }
+function stopLiar(){ liar=null; }
+function startBlackjack(){ stopAllGames(); setVisibleAvatars(); switchScreen('blackjack'); blackjack={deck:[],player:[],dealer:[],score:0,hands:0,streak:0,finished:false}; newBlackjackHand(); }
+function makeFrenchDeck(){ const suits=['♠','♥','♦','♣']; const ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K']; const deck=[]; suits.forEach(s=>ranks.forEach(r=>deck.push({rank:r,suit:s,red:s==='♥'||s==='♦'}))); return shuffle(deck); }
+function shuffle(a){ const arr=[...a]; for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function draw(deck){ return deck.pop(); }
+function blackjackValue(hand){ let total=0, aces=0; hand.forEach(c=>{ if(c.rank==='A'){ total+=11; aces++; } else if(['J','Q','K'].includes(c.rank)) total+=10; else total+=Number(c.rank); }); while(total>21 && aces){ total-=10; aces--; } return total; }
+function newBlackjackHand(){ if(!blackjack) return startBlackjack(); blackjack.deck=makeFrenchDeck(); blackjack.player=[draw(blackjack.deck),draw(blackjack.deck)]; blackjack.dealer=[draw(blackjack.deck),draw(blackjack.deck)]; blackjack.hands++; blackjack.finished=false; $('blackjackStatus').textContent='Pide carta o plántate.'; renderBlackjack(false); if(blackjackValue(blackjack.player)===21) blackjackStand(); }
+function renderCard(c, hidden=false){ if(hidden) return '<div class="play-card back">★</div>'; return `<div class="play-card ${c.red?'red':''}"><span>${c.rank}</span><strong>${c.suit}</strong></div>`; }
+function renderBlackjack(reveal=false){ if(!blackjack) return; $('blackjackScore').textContent=blackjack.score; $('blackjackHands').textContent=blackjack.hands; $('blackjackStreak').textContent=blackjack.streak; $('blackjackPlayerValue').textContent=blackjackValue(blackjack.player); $('blackjackDealerValue').textContent=reveal?blackjackValue(blackjack.dealer):'?'; $('blackjackPlayerHand').innerHTML=blackjack.player.map(c=>renderCard(c)).join(''); $('blackjackDealerHand').innerHTML=blackjack.dealer.map((c,i)=>renderCard(c,!reveal && i===1)).join(''); $('blackjackHitBtn').disabled=blackjack.finished; $('blackjackStandBtn').disabled=blackjack.finished; }
+function blackjackHit(){ if(!blackjack || blackjack.finished) return; blackjack.player.push(draw(blackjack.deck)); const val=blackjackValue(blackjack.player); renderBlackjack(false); if(val>21) finishBlackjack('loss','Te has pasado. Gana la banca.'); }
+function blackjackStand(){ if(!blackjack || blackjack.finished) return; while(blackjackValue(blackjack.dealer)<17) blackjack.dealer.push(draw(blackjack.deck)); const pv=blackjackValue(blackjack.player), dv=blackjackValue(blackjack.dealer); let result='draw', msg='Empate.'; if(pv>21){ result='loss'; msg='Te has pasado. Gana la banca.'; } else if(dv>21 || pv>dv){ result='win'; msg='Has ganado la mano.'; } else if(dv>pv){ result='loss'; msg='Gana la banca.'; } finishBlackjack(result,msg); }
+function finishBlackjack(result,msg){ if(!blackjack || blackjack.finished) return; blackjack.finished=true; let gained=0; if(result==='win'){ blackjack.streak++; gained=90+(blackjackValue(blackjack.player)===21?25:0)+blackjack.streak*10; blackjack.score+=gained; playSound('win'); } else if(result==='draw'){ gained=20; blackjack.score+=gained; playSound('point'); } else { blackjack.streak=0; gained=2; playSound('fail'); } $('blackjackStatus').textContent=`${msg} +${gained} puntos.`; renderBlackjack(true); saveScore('blackjack', result==='loss'?gained:blackjack.score, result==='win'?'Victoria':result==='draw'?'Empate':'Consolación', {result}); }
+
+function startSiete(){ stopAllGames(); setVisibleAvatars(); switchScreen('sieteymedio'); siete={deck:[],player:[],dealer:[],score:0,hands:0,streak:0,finished:false}; newSieteHand(); }
+function makeSpanishDeck(){ const suits=['oros','copas','espadas','bastos']; const ranks=['1','2','3','4','5','6','7','S','C','R']; const deck=[]; suits.forEach(s=>ranks.forEach(r=>deck.push({rank:r,suit:s,red:s==='oros'||s==='copas'}))); return shuffle(deck); }
+function sieteValue(hand){ return hand.reduce((sum,c)=>sum+(['S','C','R'].includes(c.rank)?0.5:Number(c.rank)),0); }
+function spanishSuitIcon(s){ return {oros:'🟡',copas:'🏆',espadas:'⚔️',bastos:'🌿'}[s] || '🃏'; }
+function renderSpanishCard(c, hidden=false){ if(hidden) return '<div class="play-card back">★</div>'; return `<div class="play-card spanish ${c.red?'red':''}"><span>${c.rank}</span><strong>${spanishSuitIcon(c.suit)}</strong></div>`; }
+function newSieteHand(){ if(!siete) return startSiete(); siete.deck=makeSpanishDeck(); siete.player=[draw(siete.deck)]; siete.dealer=[draw(siete.deck)]; siete.hands++; siete.finished=false; $('sieteStatus').textContent='Pide carta o plántate.'; renderSiete(false); }
+function renderSiete(reveal=false){ if(!siete) return; $('sieteScore').textContent=siete.score; $('sieteHands').textContent=siete.hands; $('sieteStreak').textContent=siete.streak; $('sietePlayerValue').textContent=sieteValue(siete.player).toString().replace('.5','½'); $('sieteDealerValue').textContent=reveal?sieteValue(siete.dealer).toString().replace('.5','½'):'?'; $('sietePlayerHand').innerHTML=siete.player.map(c=>renderSpanishCard(c)).join(''); $('sieteDealerHand').innerHTML=siete.dealer.map((c,i)=>renderSpanishCard(c,!reveal && i>0)).join(''); $('sieteHitBtn').disabled=siete.finished; $('sieteStandBtn').disabled=siete.finished; }
+function sieteHit(){ if(!siete || siete.finished) return; siete.player.push(draw(siete.deck)); renderSiete(false); if(sieteValue(siete.player)>7.5) finishSiete('loss','Te has pasado de 7½.'); }
+function sieteStand(){ if(!siete || siete.finished) return; while(sieteValue(siete.dealer)<5.5 && sieteValue(siete.dealer)<=sieteValue(siete.player)) siete.dealer.push(draw(siete.deck)); const pv=sieteValue(siete.player), dv=sieteValue(siete.dealer); let result='draw', msg='Empate.'; if(pv>7.5){ result='loss'; msg='Te has pasado de 7½.'; } else if(dv>7.5 || pv>dv){ result='win'; msg='Has ganado la mano.'; } else if(dv>pv){ result='loss'; msg='Gana la banca.'; } finishSiete(result,msg); }
+function finishSiete(result,msg){ if(!siete || siete.finished) return; siete.finished=true; const val=sieteValue(siete.player); let gained=0; if(result==='win'){ siete.streak++; gained=85+(val===7.5?35:Math.round(val*3))+siete.streak*8; siete.score+=gained; playSound('win'); } else if(result==='draw'){ gained=18; siete.score+=gained; playSound('point'); } else { siete.streak=0; gained=2; playSound('fail'); } $('sieteStatus').textContent=`${msg} +${gained} puntos.`; renderSiete(true); saveScore('sieteymedio', result==='loss'?gained:siete.score, result==='win'?'Victoria':result==='draw'?'Empate':'Consolación', {result}); }
+
+function startLiar(){ stopAllGames(); setVisibleAvatars(); switchScreen('liar'); liar={score:0,round:0,wins:0,player:[],cpu:[],bid:null,turn:'player',finished:false}; fillLiarSelects(); newLiarRound(); }
+function fillLiarSelects(){ const q=$('liarQty'), f=$('liarFace'); if(q && !q.options.length){ for(let i=1;i<=10;i++) q.add(new Option(i,i)); } if(f && !f.options.length){ for(let i=1;i<=6;i++) f.add(new Option(i,i)); } }
+function rollDice(n=5){ return Array.from({length:n},()=>1+Math.floor(Math.random()*6)); }
+function newLiarRound(){ if(!liar) return startLiar(); liar.round++; liar.player=rollDice(); liar.cpu=rollDice(); liar.bid=null; liar.turn='player'; liar.finished=false; $('liarStatus').textContent='Haz una apuesta inicial sobre los 10 dados totales.'; renderLiar(false); }
+function dieFace(n){ return ['','⚀','⚁','⚂','⚃','⚄','⚅'][n] || '⚀'; }
+function renderLiar(reveal=false){ if(!liar) return; $('liarScore').textContent=liar.score; $('liarRound').textContent=liar.round; $('liarWins').textContent=liar.wins; $('liarPlayerDice').innerHTML=liar.player.map(d=>`<span class="die">${dieFace(d)}</span>`).join(''); $('liarCpuDice').innerHTML=liar.cpu.map(d=>`<span class="die ${reveal?'':'back'}">${reveal?dieFace(d):'?'}</span>`).join(''); $('liarBid').textContent=liar.bid?`${liar.bid.qty} dados de ${liar.bid.face}`:'-'; $('liarBidBtn').disabled=liar.finished || liar.turn!=='player'; $('liarChallengeBtn').disabled=liar.finished || liar.turn!=='player' || !liar.bid; }
+function validLiarBid(qty, face){ if(!liar.bid) return qty>=1 && face>=1; return qty>liar.bid.qty || (qty===liar.bid.qty && face>liar.bid.face); }
+function playerLiarBid(){ if(!liar || liar.finished || liar.turn!=='player') return; const qty=Number($('liarQty').value), face=Number($('liarFace').value); if(!validLiarBid(qty,face)){ $('liarStatus').textContent='La apuesta debe superar la actual.'; return; } liar.bid={qty,face,by:'player'}; liar.turn='cpu'; $('liarStatus').textContent=`Has apostado ${qty} dados de ${face}. La CPU piensa...`; renderLiar(false); setTimeout(cpuLiarTurn,650); }
+function countDice(face){ return [...liar.player,...liar.cpu].filter(d=>d===face).length; }
+function cpuLiarTurn(){ if(!liar || liar.finished) return; const real=liar.bid?countDice(liar.bid.face):0; const shouldChallenge=liar.bid && (liar.bid.qty>real+1 || (liar.bid.qty>=7 && Math.random()<0.45)); if(shouldChallenge) return finishLiarChallenge('cpu'); let qty=liar.bid?liar.bid.qty:1, face=liar.bid?liar.bid.face:1; if(!liar.bid){ qty=1+Math.floor(Math.random()*2); face=liar.cpu[Math.floor(Math.random()*liar.cpu.length)]; } else if(face<6 && Math.random()<0.55){ face++; } else { qty++; if(qty>10) return finishLiarChallenge('cpu'); } liar.bid={qty,face,by:'cpu'}; liar.turn='player'; $('liarStatus').textContent=`La CPU sube a ${qty} dados de ${face}. Sube o acusa de mentiroso.`; renderLiar(false); }
+function playerLiarChallenge(){ if(!liar || liar.finished || !liar.bid) return finishLiarChallenge('player'); }
+function finishLiarChallenge(challenger){ const real=countDice(liar.bid.face); const bidder=liar.bid.by; const bidTrue=real>=liar.bid.qty; const challengerWins=!bidTrue; const playerWins=(challenger==='player' && challengerWins) || (bidder==='player' && bidTrue); liar.finished=true; let gained=2; if(playerWins){ liar.wins++; gained=95+liar.wins*12; liar.score+=gained; playSound('win'); } else { playSound('fail'); } $('liarStatus').textContent=`Había ${real} dados de ${liar.bid.face}. ${playerWins?'Ganas la ronda.':'Pierdes la ronda.'} +${gained} puntos.`; renderLiar(true); saveScore('liar', playerWins?liar.score:gained, playerWins?'Victoria':'Consolación', {result:playerWins?'win':'loss'}); }
 
 
 // MATAMARCIANOS
@@ -1198,7 +1256,7 @@ function bindEvents(){
   $('registerSubmit').addEventListener('click',async e=>{ e.preventDefault(); await doRegister(); });
   $('logoutBtn').addEventListener('click',logout); $('modalOk').addEventListener('click',closeModal); $('modalNewGame').addEventListener('click',modalNewGame); $('modalMenu').addEventListener('click',modalMenu); $('registerLang')?.addEventListener('change',e=>setLang(e.target.value)); $('loginLang')?.addEventListener('change',e=>setLang(e.target.value)); document.querySelectorAll('.lang-toggle').forEach(b=>b.addEventListener('click',toggleLanguage)); $('quickPlayBtn').addEventListener('click',quickPlay); $('soundToggleBtn').addEventListener('click',toggleSound); $('weeklyRankBtn').addEventListener('click',()=>{rankingScope='weekly'; renderRanking();}); $('allRankBtn').addEventListener('click',()=>{rankingScope='all'; renderRanking();});
   document.addEventListener('click', async e => { const btn=e.target.closest('button'); if(!btn) return; const action=btn.dataset.action, gameId=btn.dataset.game; if(action==='detail') renderGameDetail(gameId); if(action==='cpu') startGame(gameId); if(action==='room') createRoom(gameId); if(action==='join'){ const jb=$(`joinBox-${gameId}`) || $('detailJoinBox'); jb?.classList.toggle('hidden'); const rb=$(`roomBox-${gameId}`) || $('detailRoomBox'); if(rb) rb.classList.add('hidden'); } if(action==='join-confirm') joinRoom(gameId); if(action==='copy'){ const code=$(`generatedCode-${gameId}`).value; try{ await navigator.clipboard.writeText(code); showModal(t('codeCopied'), `${t('roomCode')}: ${code}`); } catch { showModal(t('roomCode'), code); } } if(action==='share') shareRoomCode(gameId); });
-  document.querySelectorAll('.backHome').forEach(b=>b.addEventListener('click',()=>{ closeModal(); stopAllGames(); enterHome(); })); $('detailBackBtn')?.addEventListener('click',()=>{ closeModal(); enterHome(); }); $('pausePongBtn').addEventListener('click',()=>{ if(pong) pong.paused=!pong.paused; }); $('restartSnakeBtn').addEventListener('click',startSnake); $('restartTicBtn').addEventListener('click',newTicRound); $('restartMemoryBtn')?.addEventListener('click',startMemory); $('restartConnect4Btn')?.addEventListener('click',newConnect4Round);
+  document.querySelectorAll('.backHome').forEach(b=>b.addEventListener('click',()=>{ closeModal(); stopAllGames(); enterHome(); })); $('detailBackBtn')?.addEventListener('click',()=>{ closeModal(); enterHome(); }); $('pausePongBtn').addEventListener('click',()=>{ if(pong) pong.paused=!pong.paused; }); $('restartSnakeBtn').addEventListener('click',startSnake); $('restartTicBtn').addEventListener('click',newTicRound); $('restartMemoryBtn')?.addEventListener('click',startMemory); $('restartConnect4Btn')?.addEventListener('click',newConnect4Round); $('restartBlackjackBtn')?.addEventListener('click',newBlackjackHand); $('blackjackHitBtn')?.addEventListener('click',blackjackHit); $('blackjackStandBtn')?.addEventListener('click',blackjackStand); $('restartSieteBtn')?.addEventListener('click',newSieteHand); $('sieteHitBtn')?.addEventListener('click',sieteHit); $('sieteStandBtn')?.addEventListener('click',sieteStand); $('restartLiarBtn')?.addEventListener('click',newLiarRound); $('liarBidBtn')?.addEventListener('click',playerLiarBid); $('liarChallengeBtn')?.addEventListener('click',playerLiarChallenge);
   window.addEventListener('keydown', e => { if(pong){ if(e.key==='ArrowLeft') pong.keys.left=true; if(e.key==='ArrowRight') pong.keys.right=true; if(e.key==='ArrowUp') pong.keys.left=true; if(e.key==='ArrowDown') pong.keys.right=true; } if(snake){ if(e.key==='ArrowUp') changeSnakeDir('up'); if(e.key==='ArrowDown') changeSnakeDir('down'); if(e.key==='ArrowLeft') changeSnakeDir('left'); if(e.key==='ArrowRight') changeSnakeDir('right'); } if(shooter){ if(e.key==='ArrowLeft') setShooterAxis(-1); if(e.key==='ArrowRight') setShooterAxis(1); if(e.code==='Space') shooter.fire=true; if(e.key.toLowerCase()==='b') shooterUseBomb(); } });
   window.addEventListener('keyup', e => { if(pong){ if(e.key==='ArrowLeft') pong.keys.left=false; if(e.key==='ArrowRight') pong.keys.right=false; if(e.key==='ArrowUp') pong.keys.left=false; if(e.key==='ArrowDown') pong.keys.right=false; } if(shooter){ if(e.key==='ArrowLeft'||e.key==='ArrowRight') setShooterAxis(0); if(e.code==='Space') shooter.fire=false; } });
   $('pongCanvas').addEventListener('pointerdown', e => { if(e.cancelable) e.preventDefault(); if(!pong) return; const rect=pong.canvas.getBoundingClientRect(); const x=((e.clientX-rect.left)/rect.width)*pong.canvas.width; pong.player.x=clamp(x-pong.player.w/2,0,pong.canvas.width-pong.player.w); });

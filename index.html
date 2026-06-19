@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Partida Rápida</title>
-  <link rel="stylesheet" href="styles.css?v=800" />
+  <link rel="stylesheet" href="styles.css?v=850" />
 </head>
 <body>
   <div class="app-bg"></div>
@@ -218,11 +218,56 @@
       </section>
     </section>
 
+
+    <section id="blackjackScreen" class="screen game-screen card-game-screen">
+      <header class="topbar game-topbar"><div class="user-heading"><div id="blackjackAvatar" class="avatar-badge">🙂</div><div><span class="overline">Blackjack contra CPU</span><h2>Busca el 21 sin pasarte</h2></div></div><div class="game-buttons"><button id="restartBlackjackBtn" class="ghost-btn" type="button">Nueva mano</button><button class="ghost-btn lang-toggle" type="button" title="Cambiar idioma">CAS/VAL</button><button class="ghost-btn backHome" type="button">Volver</button></div></header>
+      <section class="card-table-layout">
+        <div class="scoreboard"><div><span id="blackjackScore">0</span><small>Puntos</small></div><div class="target">Mano <span id="blackjackHands">1</span></div><div><span id="blackjackStreak">0</span><small>Racha</small></div></div>
+        <div id="blackjackStatus" class="card-status">Pide carta o plántate.</div>
+        <div class="card-table">
+          <div class="hand-block"><div class="hand-title">Banca · <span id="blackjackDealerValue">?</span></div><div id="blackjackDealerHand" class="card-hand"></div></div>
+          <div class="hand-block"><div class="hand-title">Tú · <span id="blackjackPlayerValue">0</span></div><div id="blackjackPlayerHand" class="card-hand"></div></div>
+        </div>
+        <div class="card-actions"><button id="blackjackHitBtn" class="primary-btn" type="button">Pedir carta</button><button id="blackjackStandBtn" class="secondary-btn" type="button">Plantarse</button></div>
+        <p class="control-hint">Móvil: botones grandes y cartas visibles. Las salas de Blackjack están desactivadas por ahora.</p>
+      </section>
+    </section>
+
+    <section id="sieteymedioScreen" class="screen game-screen card-game-screen">
+      <header class="topbar game-topbar"><div class="user-heading"><div id="sieteAvatar" class="avatar-badge">🙂</div><div><span class="overline">Siete y medio contra CPU</span><h2>Acércate a 7½</h2></div></div><div class="game-buttons"><button id="restartSieteBtn" class="ghost-btn" type="button">Nueva mano</button><button class="ghost-btn lang-toggle" type="button" title="Cambiar idioma">CAS/VAL</button><button class="ghost-btn backHome" type="button">Volver</button></div></header>
+      <section class="card-table-layout spanish-table">
+        <div class="scoreboard"><div><span id="sieteScore">0</span><small>Puntos</small></div><div class="target">Mano <span id="sieteHands">1</span></div><div><span id="sieteStreak">0</span><small>Racha</small></div></div>
+        <div id="sieteStatus" class="card-status">Pide carta o plántate.</div>
+        <div class="card-table">
+          <div class="hand-block"><div class="hand-title">Banca · <span id="sieteDealerValue">?</span></div><div id="sieteDealerHand" class="card-hand"></div></div>
+          <div class="hand-block"><div class="hand-title">Tú · <span id="sietePlayerValue">0</span></div><div id="sietePlayerHand" class="card-hand"></div></div>
+        </div>
+        <div class="card-actions"><button id="sieteHitBtn" class="primary-btn" type="button">Pedir carta</button><button id="sieteStandBtn" class="secondary-btn" type="button">Plantarse</button></div>
+        <p class="control-hint">Baraja española: sota, caballo y rey valen ½. Las salas se activarán más adelante.</p>
+      </section>
+    </section>
+
+    <section id="liarScreen" class="screen game-screen liar-game-screen">
+      <header class="topbar game-topbar"><div class="user-heading"><div id="liarAvatar" class="avatar-badge">🙂</div><div><span class="overline">Mentiroso contra CPU</span><h2>Dados y faroles</h2></div></div><div class="game-buttons"><button id="restartLiarBtn" class="ghost-btn" type="button">Nueva ronda</button><button class="ghost-btn lang-toggle" type="button" title="Cambiar idioma">CAS/VAL</button><button class="ghost-btn backHome" type="button">Volver</button></div></header>
+      <section class="liar-layout">
+        <div class="scoreboard"><div><span id="liarScore">0</span><small>Puntos</small></div><div class="target">Ronda <span id="liarRound">1</span></div><div><span id="liarWins">0</span><small>Ganadas</small></div></div>
+        <div id="liarStatus" class="card-status">Haz una apuesta inicial.</div>
+        <div class="dice-table">
+          <div class="hand-block"><div class="hand-title">Tus dados</div><div id="liarPlayerDice" class="dice-row"></div></div>
+          <div class="hand-block"><div class="hand-title">Dados CPU</div><div id="liarCpuDice" class="dice-row hidden-dice"></div></div>
+          <div class="current-bid">Apuesta actual: <strong id="liarBid">-</strong></div>
+        </div>
+        <div class="liar-bid-controls"><label>Cantidad<select id="liarQty"></select></label><label>Valor<select id="liarFace"></select></label></div>
+        <div class="card-actions"><button id="liarBidBtn" class="primary-btn" type="button">Subir apuesta</button><button id="liarChallengeBtn" class="secondary-btn" type="button">Mentiroso</button></div>
+        <p class="control-hint">Versión rápida: 5 dados por jugador. Pierde la ronda quien falla al acusar o quien fue pillado mintiendo.</p>
+      </section>
+    </section>
+
     <div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-card"><h3 id="modalTitle">Resultado</h3><p id="modalText"></p><div class="modal-actions"><button id="modalOk" class="primary-btn" type="button">Aceptar</button><button id="modalNewGame" class="secondary-btn hidden" type="button">Partida nueva</button><button id="modalMenu" class="primary-btn hidden" type="button">Salir al menú principal</button></div></div></div>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
-  <script src="supabase-api.js?v=770"></script>
-  <script src="app.js?v=800"></script>
+  <script src="supabase-api.js?v=850"></script>
+  <script src="app.js?v=850"></script>
 </body>
 </html>
