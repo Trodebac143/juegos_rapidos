@@ -761,3 +761,205 @@ canvas{
   .card-actions{grid-template-columns:1fr;}
   .die{width:46px;height:46px;font-size:1.7rem;}
 }
+
+
+/* V8.5.7 - Vista compacta para juegos de cartas y dados en móvil.
+   Objetivo: que los botones principales se vean sin tener que hacer scroll. */
+@media(max-width:620px){
+  .card-game-screen .app-shell,
+  .liar-game-screen .app-shell{padding-top:4px;}
+
+  .card-game-screen .game-topbar,
+  .liar-game-screen .game-topbar{
+    display:grid;
+    gap:7px;
+    padding:8px;
+    margin-bottom:7px;
+    border-radius:16px;
+  }
+
+  .card-game-screen .user-heading,
+  .liar-game-screen .user-heading{gap:8px;align-items:center;}
+
+  .card-game-screen .avatar-badge,
+  .liar-game-screen .avatar-badge{
+    width:42px;
+    height:42px;
+    min-width:42px;
+    border-radius:14px;
+    font-size:1.45rem;
+  }
+
+  .card-game-screen .overline,
+  .liar-game-screen .overline{
+    font-size:.82rem;
+    line-height:1.05;
+    margin-bottom:2px;
+  }
+
+  .card-game-screen .topbar h2,
+  .liar-game-screen .topbar h2{
+    font-size:1.18rem;
+    line-height:1.08;
+  }
+
+  .card-game-screen .game-buttons,
+  .liar-game-screen .game-buttons{
+    grid-template-columns:1fr 1fr 1fr;
+    gap:6px;
+  }
+
+  .card-game-screen .game-buttons .ghost-btn,
+  .liar-game-screen .game-buttons .ghost-btn{
+    padding:8px 6px;
+    min-height:42px;
+    border-radius:13px;
+    font-size:.86rem;
+    line-height:1.05;
+  }
+
+  .card-table-layout,
+  .liar-layout{width:100%;}
+
+  .card-game-screen .scoreboard,
+  .liar-game-screen .scoreboard{
+    grid-template-columns:1fr 1fr 1fr;
+    gap:6px;
+    margin-bottom:7px;
+  }
+
+  .card-game-screen .scoreboard>div,
+  .liar-game-screen .scoreboard>div{
+    padding:7px 5px;
+    border-radius:13px;
+  }
+
+  .card-game-screen .scoreboard span,
+  .liar-game-screen .scoreboard span{font-size:1.06rem;}
+
+  .card-game-screen .scoreboard small,
+  .liar-game-screen .scoreboard small{font-size:.72rem;line-height:1.05;}
+
+  .card-game-screen .target,
+  .liar-game-screen .target{font-size:.9rem;line-height:1.1;}
+
+  .card-status{
+    padding:7px 8px;
+    min-height:0;
+    margin-bottom:7px;
+    border-radius:13px;
+    font-size:.95rem;
+    line-height:1.15;
+  }
+
+  .card-table,.dice-table{
+    padding:8px;
+    gap:8px;
+    border-radius:16px;
+  }
+
+  .hand-block{
+    padding:7px;
+    border-radius:13px;
+  }
+
+  .hand-title{
+    margin-bottom:5px;
+    font-size:.95rem;
+    line-height:1.1;
+  }
+
+  .card-hand{
+    min-height:74px;
+    gap:7px;
+    padding:1px 1px 5px;
+  }
+
+  .play-card{
+    width:52px;
+    height:74px;
+    border-radius:9px;
+    box-shadow:0 4px 0 rgba(0,0,0,.18), 0 8px 13px rgba(0,0,0,.14);
+  }
+
+  .card-corner{left:5px;top:5px;gap:1px;}
+  .card-corner .card-rank{font-size:.83rem;}
+  .french-suit.tiny{width:10px;height:10px;}
+  .french-suit.large{width:22px;height:22px;}
+  .spanish-suit.tiny{width:10px;height:10px;}
+  .spanish-suit.small{width:12px;height:12px;}
+  .spanish-suit.large{width:24px;height:24px;}
+  .card-center{inset:19px 6px 11px;}
+  .french-center{inset:21px 6px 11px;}
+  .spanish-center{inset:18px 6px 14px;}
+  .face-badge,.spanish-rank-name{font-size:.39rem;padding:1px 4px;}
+  .spanish-suit-name{font-size:.38rem;bottom:5px;}
+  .spanish-pips{gap:2px;}
+
+  .card-game-screen .card-actions,
+  .liar-game-screen .card-actions{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:8px;
+  }
+
+  .card-game-screen .card-actions .primary-btn,
+  .card-game-screen .card-actions .secondary-btn,
+  .liar-game-screen .card-actions .primary-btn,
+  .liar-game-screen .card-actions .secondary-btn{
+    min-height:48px;
+    padding:10px 8px;
+    border-radius:14px;
+    font-size:1rem;
+    line-height:1.1;
+  }
+
+  .card-game-screen .control-hint,
+  .liar-game-screen .control-hint{
+    margin:7px 2px 0;
+    font-size:.78rem;
+    line-height:1.2;
+  }
+
+  .liar-bid-controls{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:8px;
+  }
+
+  .liar-bid-controls label{
+    padding:7px;
+    border-radius:12px;
+    font-size:.85rem;
+  }
+
+  .liar-bid-controls select{
+    padding:7px;
+    border-radius:10px;
+  }
+
+  .die{
+    width:40px;
+    height:40px;
+    font-size:1.45rem;
+    border-radius:10px;
+  }
+
+  .dice-row{min-height:44px;gap:6px;}
+  .current-bid{padding:7px;border-radius:12px;font-size:.92rem;}
+}
+
+@media(max-width:390px){
+  .card-game-screen .topbar h2,
+  .liar-game-screen .topbar h2{font-size:1.08rem;}
+
+  .card-game-screen .game-buttons .ghost-btn,
+  .liar-game-screen .game-buttons .ghost-btn{font-size:.8rem;padding:7px 5px;}
+
+  .play-card{width:49px;height:70px;}
+  .card-hand{min-height:70px;}
+  .card-game-screen .card-actions .primary-btn,
+  .card-game-screen .card-actions .secondary-btn,
+  .liar-game-screen .card-actions .primary-btn,
+  .liar-game-screen .card-actions .secondary-btn{min-height:46px;font-size:.95rem;}
+}

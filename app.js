@@ -17,9 +17,9 @@ const games = [
   { id:'connect4', name:{es:'Cuatro en raya',va:'Quatre en ratlla'}, icon:'🔴🟡', art:'connect-art', desc:{es:'Conecta cuatro fichas antes que tu rival. Rápido, táctico y perfecto para salas.',va:'Connecta quatre fitxes abans que el teu rival. Ràpid, tàctic i perfecte per a sales.'}, active:true, modes:['cpu','room','join'], help:{es:'Cuatro en raya puntúa por victoria, empate y rapidez. En sala juegan dos usuarios por turnos.',va:'Quatre en ratlla puntua per victòria, empat i rapidesa. En sala juguen dos usuaris per torns.'} },
   { id:'shooter', name:{es:'Matamarcianos',va:'Matamarcians'}, icon:'🚀👾', art:'shooter-art', desc:{es:'Arcade espacial local contra CPU. Destruye oleadas, recoge bombas y derrota al jefe final de cada pantalla.',va:'Arcade espacial local contra CPU. Destruïx onades, arreplega bombes i derrota el cap final de cada pantalla.'}, active:true, modes:['cpu'], help:{es:'Matamarcianos puntúa por enemigos, jefes finales, vidas conservadas y pantallas superadas. Las bombas aparecen al azar al destruir marcianos.',va:'Matamarcians puntua per enemics, caps finals, vides conservades i pantalles superades. Les bombes apareixen a l’atzar en destruir marcians.'} },
   { id:'memory', name:{es:'Memory',va:'Memory'}, icon:'⭐❔', art:'memory-art', desc:{es:'Encuentra parejas antes de gastar demasiados movimientos. Partida corta, visual y perfecta para ranking.',va:'Troba parelles abans de gastar massa moviments. Partida curta, visual i perfecta per a rànquing.'}, active:true, modes:['cpu'], help:{es:'Memory puntúa por parejas encontradas, pocos movimientos y rapidez. Es modo individual por ranking.',va:'Memory puntua per parelles trobades, pocs moviments i rapidesa. És mode individual per rànquing.'} },
-  { id:'liar', name:{es:'Mentiroso',va:'Mentider'}, icon:'🎲🤥', art:'liar-art', desc:{es:'Dados, faroles y apuestas contra la CPU. Sube la apuesta o acusa cuando creas que miente.',va:'Daus, farols i apostes contra la CPU. Puja l’aposta o acusa quan cregues que mentix.'}, active:true, modes:['cpu'], help:{es:'Mentiroso funciona ahora contra CPU. Las salas quedan desactivadas hasta una fase posterior.',va:'Mentider funciona ara contra CPU. Les sales queden desactivades fins a una fase posterior.'} },
-  { id:'blackjack', name:{es:'Blackjack',va:'Blackjack'}, icon:'🂡21', art:'card-art', desc:{es:'Cartas rápidas contra la banca. Pide, plántate y busca el 21 sin pasarte.',va:'Cartes ràpides contra la banca. Demana, planta’t i busca el 21 sense passar-te.'}, active:true, modes:['cpu'], help:{es:'Blackjack puntúa por ganar manos contra la banca. Las salas quedan desactivadas por ahora.',va:'Blackjack puntua per guanyar mans contra la banca. Les sales queden desactivades de moment.'} },
-  { id:'sieteymedio', name:{es:'Siete y medio',va:'Set i mig'}, icon:'🃏7½', art:'card-art', desc:{es:'Clásico de baraja española contra la banca. Las figuras valen medio punto.',va:'Clàssic de baralla espanyola contra la banca. Les figures valen mig punt.'}, active:true, modes:['cpu'], help:{es:'Siete y medio puntúa por ganar manos, acercarte a 7½ y enlazar rachas.',va:'Set i mig puntua per guanyar mans, acostar-te a 7½ i encadenar ratxes.'} },
+  { id:'liar', name:{es:'Mentiroso',va:'Mentider'}, icon:'🎲🤥', art:'liar-art', desc:{es:'Dados, faroles y apuestas contra CPU o sala. Sube la apuesta o acusa cuando creas que miente.',va:'Daus, farols i apostes contra CPU o sala. Puja l’aposta o acusa quan cregues que mentix.'}, active:true, modes:['cpu','room','join'], help:{es:'Mentiroso permite sala online por turnos: dados ocultos, apuestas y acusación.',va:'Mentider permet sala en línia per torns: daus ocults, apostes i acusació.'} },
+  { id:'blackjack', name:{es:'Blackjack',va:'Blackjack'}, icon:'🂡21', art:'card-art', desc:{es:'Cartas rápidas contra la banca. Pide, plántate y busca el 21 sin pasarte.',va:'Cartes ràpides contra la banca. Demana, planta’t i busca el 21 sense passar-te.'}, active:true, modes:['cpu','room','join'], help:{es:'Blackjack puntúa por ganar manos contra la banca. En sala, ambos jugadores juegan la misma mesa por turnos.',va:'Blackjack puntua per guanyar mans contra la banca. En sala, els dos jugadors juguen la mateixa taula per torns.'} },
+  { id:'sieteymedio', name:{es:'Siete y medio',va:'Set i mig'}, icon:'🃏7½', art:'card-art', desc:{es:'Clásico de baraja española contra la banca. Las figuras valen medio punto.',va:'Clàssic de baralla espanyola contra la banca. Les figures valen mig punt.'}, active:true, modes:['cpu','room','join'], help:{es:'Siete y medio puntúa por ganar manos, acercarte a 7½ y enlazar rachas. En sala, ambos jugadores juegan la misma mesa por turnos.',va:'Set i mig puntua per guanyar mans, acostar-te a 7½ i encadenar ratxes. En sala, els dos jugadors juguen la mateixa taula per torns.'} },
   { id:'generala', name:{es:'Generala',va:'Generala'}, icon:'🎲🎲', art:'dice-art', desc:{es:'Dados, combinaciones y ranking. Partidas cortas por puntuación.',va:'Daus, combinacions i rànquing. Partides curtes per puntuació.'}, active:false, modes:[], help:{es:'Pendiente de desarrollo.',va:'Pendent de desenvolupament.'} },
   { id:'parchis', name:{es:'Parchís',va:'Parxís'}, icon:'🎲', art:'parchis-art', desc:{es:'Partidas por sala para hasta 4 jugadores.',va:'Partides per sala per a fins a 4 jugadors.'}, active:false, modes:[], help:{es:'Ranking pendiente.',va:'Rànquing pendent.'} }
 ];
@@ -57,6 +57,7 @@ let roomPollTimer = null;
 let pongRoomSyncTimer = null;
 let ticRoomSyncTimer = null;
 let connect4RoomSyncTimer = null;
+let simpleRoomSyncTimer = null;
 
 let uiLang = 'es';
 let pendingModalAction = null;
@@ -214,7 +215,7 @@ function gameButtons(g){
   const cpu = g.modes.includes('cpu') ? `<button class="primary-btn" type="button" data-action="cpu" data-game="${g.id}">${t('playCpu')}</button>` : '';
   const room = g.modes.includes('room') ? `<button class="secondary-btn" type="button" data-action="room" data-game="${g.id}">${t('createRoom')}</button>` : '';
   const join = g.modes.includes('join') ? `<button class="secondary-btn" type="button" data-action="join" data-game="${g.id}">${t('enterCode')}</button>` : '';
-  const disabledRooms = ['pong','blackjack','sieteymedio','liar'].includes(g.id) ? `<span class="pill">${t('roomsDisabled')}</span>` : '';
+  const disabledRooms = ['pong'].includes(g.id) ? `<span class="pill">${t('roomsDisabled')}</span>` : '';
   return cpu + room + join + disabledRooms;
 }
 function renderRankingTabs(){
@@ -360,7 +361,7 @@ function logout(){ currentUser = null; localStorage.removeItem(STORAGE_SESSION);
 function randomCode(){ const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let code=''; for(let i=0;i<5;i++) code += alphabet[Math.floor(Math.random()*alphabet.length)]; return code; }
 async function createRoom(gameId){
   if(gameId === 'pong') return showModal(t('roomsDisabled'), t('roomsDisabled'));
-  if(!['tictac','connect4'].includes(gameId)) return showModal(t('roomNotFound'), t('roomNotFoundText'));
+  if(!['tictac','connect4','blackjack','sieteymedio','liar'].includes(gameId)) return showModal(t('roomNotFound'), t('roomNotFoundText'));
   if(!cloudEnabled() || !cloudSessionToken()){
     return showModal(t('roomNotFound'), 'Para probar salas reales necesitas entrar con un jugador conectado a Supabase.');
   }
@@ -398,7 +399,7 @@ function clearPongRoomSync(){ if(pongRoomSyncTimer){ clearInterval(pongRoomSyncT
 async function joinRoom(gameId){
   const code = $(`joinCode-${gameId}`).value.trim().toUpperCase();
   if(gameId === 'pong') return showModal(t('roomsDisabled'), t('roomsDisabled'));
-  if(!['tictac','connect4'].includes(gameId)) return showModal(t('roomNotFound'), t('roomNotFoundText'));
+  if(!['tictac','connect4','blackjack','sieteymedio','liar'].includes(gameId)) return showModal(t('roomNotFound'), t('roomNotFoundText'));
   if(!code) return showModal(t('roomNotFound'), t('roomNotFoundText'));
   if(!cloudEnabled() || !cloudSessionToken()){
     return showModal(t('roomNotFound'), 'Para entrar en una sala real necesitas iniciar sesión con Supabase.');
@@ -427,7 +428,7 @@ function showResultModal(title, text, gameId){
   $('modal').classList.remove('hidden');
 }
 function closeModal(){ $('modal').classList.add('hidden'); pendingModalAction = null; }
-function modalNewGame(){ const gameId=pendingModalAction; closeModal(); if(gameId==='tictac-room') return resetTicRoomRound(); if(gameId==='connect4-room') return resetConnect4RoomRound(); if(gameId) startGame(gameId); }
+function modalNewGame(){ const gameId=pendingModalAction; closeModal(); if(gameId==='tictac-room') return resetTicRoomRound(); if(gameId==='connect4-room') return resetConnect4RoomRound(); if(gameId==='blackjack-room') return resetSimpleRoomRound('blackjack'); if(gameId==='sieteymedio-room') return resetSimpleRoomRound('sieteymedio'); if(gameId==='liar-room') return resetSimpleRoomRound('liar'); if(gameId) startGame(gameId); }
 function modalMenu(){ closeModal(); stopAllGames(); enterHome(); }
 function updateGameLabels(){
   const set=(id,txt)=>{const el=$(id); if(el) el.textContent=txt;};
@@ -474,6 +475,9 @@ function startPong(){ stopAllGames(); setVisibleAvatars(); switchScreen('pong');
 function startOnlineRoom(room, role){
   if(room?.game === 'tictac') return startTicRoom(room, role);
   if(room?.game === 'connect4') return startConnect4Room(room, role);
+  if(room?.game === 'blackjack') return startBlackjackRoom(room, role);
+  if(room?.game === 'sieteymedio') return startSieteRoom(room, role);
+  if(room?.game === 'liar') return startLiarRoom(room, role);
   return startPongRoom(room, role);
 }
 function startPongRoom(room, role){
@@ -980,15 +984,16 @@ function finishTicRoomFromState(st){
 
 
 // BLACKJACK, SIETE Y MEDIO Y MENTIROSO
-function stopBlackjack(){ blackjack=null; }
-function stopSiete(){ siete=null; }
-function stopLiar(){ liar=null; }
+function clearSimpleRoomSync(){ if(simpleRoomSyncTimer){ clearInterval(simpleRoomSyncTimer); simpleRoomSyncTimer=null; } }
+function stopBlackjack(){ if(blackjack?.mode==='room') clearSimpleRoomSync(); blackjack=null; }
+function stopSiete(){ if(siete?.mode==='room') clearSimpleRoomSync(); siete=null; }
+function stopLiar(){ if(liar?.mode==='room') clearSimpleRoomSync(); liar=null; }
 function startBlackjack(){ stopAllGames(); setVisibleAvatars(); switchScreen('blackjack'); blackjack={deck:[],player:[],dealer:[],score:0,hands:0,streak:0,finished:false}; newBlackjackHand(); }
 function makeFrenchDeck(){ const suits=['♠','♥','♦','♣']; const ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K']; const deck=[]; suits.forEach(s=>ranks.forEach(r=>deck.push({rank:r,suit:s,red:s==='♥'||s==='♦'}))); return shuffle(deck); }
 function shuffle(a){ const arr=[...a]; for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
 function draw(deck){ return deck.pop(); }
 function blackjackValue(hand){ let total=0, aces=0; hand.forEach(c=>{ if(c.rank==='A'){ total+=11; aces++; } else if(['J','Q','K'].includes(c.rank)) total+=10; else total+=Number(c.rank); }); while(total>21 && aces){ total-=10; aces--; } return total; }
-function newBlackjackHand(){ if(!blackjack) return startBlackjack(); blackjack.deck=makeFrenchDeck(); blackjack.player=[draw(blackjack.deck),draw(blackjack.deck)]; blackjack.dealer=[draw(blackjack.deck),draw(blackjack.deck)]; blackjack.hands++; blackjack.finished=false; $('blackjackStatus').textContent='Pide carta o plántate.'; renderBlackjack(false); if(blackjackValue(blackjack.player)===21) blackjackStand(); }
+function newBlackjackHand(){ if(blackjack?.mode==='room') return resetSimpleRoomRound('blackjack'); if(!blackjack) return startBlackjack(); blackjack.deck=makeFrenchDeck(); blackjack.player=[draw(blackjack.deck),draw(blackjack.deck)]; blackjack.dealer=[draw(blackjack.deck),draw(blackjack.deck)]; blackjack.hands++; blackjack.finished=false; $('blackjackStatus').textContent='Pide carta o plántate.'; renderBlackjack(false); if(blackjackValue(blackjack.player)===21) blackjackStand(); }
 function cardBackMarkup(mark='★'){ return `<div class="play-card back"><div class="card-back-inner"><span>${mark}</span></div></div>`; }
 function frenchSuitClass(s){ return {'♠':'spades','♥':'hearts','♦':'diamonds','♣':'clubs'}[s] || 'spades'; }
 function frenchFaceLabel(rank){ return ({A:'ACE',J:'JACK',Q:'QUEEN',K:'KING'})[rank] || ''; }
@@ -1014,8 +1019,8 @@ function renderCard(c, hidden=false){
   </div>`;
 }
 function renderBlackjack(reveal=false){ if(!blackjack) return; $('blackjackScore').textContent=blackjack.score; $('blackjackHands').textContent=blackjack.hands; $('blackjackStreak').textContent=blackjack.streak; $('blackjackPlayerValue').textContent=blackjackValue(blackjack.player); $('blackjackDealerValue').textContent=reveal?blackjackValue(blackjack.dealer):'?'; $('blackjackPlayerHand').innerHTML=blackjack.player.map(c=>renderCard(c)).join(''); $('blackjackDealerHand').innerHTML=blackjack.dealer.map((c,i)=>renderCard(c,!reveal && i===1)).join(''); $('blackjackHitBtn').disabled=blackjack.finished; $('blackjackStandBtn').disabled=blackjack.finished; }
-function blackjackHit(){ if(!blackjack || blackjack.finished) return; blackjack.player.push(draw(blackjack.deck)); const val=blackjackValue(blackjack.player); renderBlackjack(false); if(val>21) finishBlackjack('loss','Te has pasado. Gana la banca.'); }
-function blackjackStand(){ if(!blackjack || blackjack.finished) return; while(blackjackValue(blackjack.dealer)<17) blackjack.dealer.push(draw(blackjack.deck)); const pv=blackjackValue(blackjack.player), dv=blackjackValue(blackjack.dealer); let result='draw', msg='Empate.'; if(pv>21){ result='loss'; msg='Te has pasado. Gana la banca.'; } else if(dv>21 || pv>dv){ result='win'; msg='Has ganado la mano.'; } else if(dv>pv){ result='loss'; msg='Gana la banca.'; } finishBlackjack(result,msg); }
+function blackjackHit(){ if(blackjack?.mode==='room') return roomBlackjackHit(); if(!blackjack || blackjack.finished) return; blackjack.player.push(draw(blackjack.deck)); const val=blackjackValue(blackjack.player); renderBlackjack(false); if(val>21) finishBlackjack('loss','Te has pasado. Gana la banca.'); }
+function blackjackStand(){ if(blackjack?.mode==='room') return roomBlackjackStand(); if(!blackjack || blackjack.finished) return; while(blackjackValue(blackjack.dealer)<17) blackjack.dealer.push(draw(blackjack.deck)); const pv=blackjackValue(blackjack.player), dv=blackjackValue(blackjack.dealer); let result='draw', msg='Empate.'; if(pv>21){ result='loss'; msg='Te has pasado. Gana la banca.'; } else if(dv>21 || pv>dv){ result='win'; msg='Has ganado la mano.'; } else if(dv>pv){ result='loss'; msg='Gana la banca.'; } finishBlackjack(result,msg); }
 function finishBlackjack(result,msg){ if(!blackjack || blackjack.finished) return; blackjack.finished=true; let gained=0; if(result==='win'){ blackjack.streak++; gained=90+(blackjackValue(blackjack.player)===21?25:0)+blackjack.streak*10; blackjack.score+=gained; playSound('win'); } else if(result==='draw'){ gained=20; blackjack.score+=gained; playSound('point'); } else { blackjack.streak=0; gained=2; playSound('fail'); } $('blackjackStatus').textContent=`${msg} +${gained} puntos.`; renderBlackjack(true); saveScore('blackjack', result==='loss'?gained:blackjack.score, result==='win'?'Victoria':result==='draw'?'Empate':'Consolación', {result}); }
 
 function startSiete(){ stopAllGames(); setVisibleAvatars(); switchScreen('sieteymedio'); siete={deck:[],player:[],dealer:[],score:0,hands:0,streak:0,finished:false}; newSieteHand(); }
@@ -1047,23 +1052,128 @@ function renderSpanishCard(c, hidden=false){
     <div class="spanish-suit-name">${spanishSuitName(c.suit)}</div>
   </div>`;
 }
-function newSieteHand(){ if(!siete) return startSiete(); siete.deck=makeSpanishDeck(); siete.player=[draw(siete.deck)]; siete.dealer=[draw(siete.deck)]; siete.hands++; siete.finished=false; $('sieteStatus').textContent='Pide carta o plántate.'; renderSiete(false); }
+function newSieteHand(){ if(siete?.mode==='room') return resetSimpleRoomRound('sieteymedio'); if(!siete) return startSiete(); siete.deck=makeSpanishDeck(); siete.player=[draw(siete.deck)]; siete.dealer=[draw(siete.deck)]; siete.hands++; siete.finished=false; $('sieteStatus').textContent='Pide carta o plántate.'; renderSiete(false); }
 function renderSiete(reveal=false){ if(!siete) return; $('sieteScore').textContent=siete.score; $('sieteHands').textContent=siete.hands; $('sieteStreak').textContent=siete.streak; $('sietePlayerValue').textContent=sieteValue(siete.player).toString().replace('.5','½'); $('sieteDealerValue').textContent=reveal?sieteValue(siete.dealer).toString().replace('.5','½'):'?'; $('sietePlayerHand').innerHTML=siete.player.map(c=>renderSpanishCard(c)).join(''); $('sieteDealerHand').innerHTML=siete.dealer.map((c,i)=>renderSpanishCard(c,!reveal && i>0)).join(''); $('sieteHitBtn').disabled=siete.finished; $('sieteStandBtn').disabled=siete.finished; }
-function sieteHit(){ if(!siete || siete.finished) return; siete.player.push(draw(siete.deck)); renderSiete(false); if(sieteValue(siete.player)>7.5) finishSiete('loss','Te has pasado de 7½.'); }
-function sieteStand(){ if(!siete || siete.finished) return; while(sieteValue(siete.dealer)<5.5 && sieteValue(siete.dealer)<=sieteValue(siete.player)) siete.dealer.push(draw(siete.deck)); const pv=sieteValue(siete.player), dv=sieteValue(siete.dealer); let result='draw', msg='Empate.'; if(pv>7.5){ result='loss'; msg='Te has pasado de 7½.'; } else if(dv>7.5 || pv>dv){ result='win'; msg='Has ganado la mano.'; } else if(dv>pv){ result='loss'; msg='Gana la banca.'; } finishSiete(result,msg); }
+function sieteHit(){ if(siete?.mode==='room') return roomSieteHit(); if(!siete || siete.finished) return; siete.player.push(draw(siete.deck)); renderSiete(false); if(sieteValue(siete.player)>7.5) finishSiete('loss','Te has pasado de 7½.'); }
+function sieteStand(){ if(siete?.mode==='room') return roomSieteStand(); if(!siete || siete.finished) return; while(sieteValue(siete.dealer)<5.5 && sieteValue(siete.dealer)<=sieteValue(siete.player)) siete.dealer.push(draw(siete.deck)); const pv=sieteValue(siete.player), dv=sieteValue(siete.dealer); let result='draw', msg='Empate.'; if(pv>7.5){ result='loss'; msg='Te has pasado de 7½.'; } else if(dv>7.5 || pv>dv){ result='win'; msg='Has ganado la mano.'; } else if(dv>pv){ result='loss'; msg='Gana la banca.'; } finishSiete(result,msg); }
 function finishSiete(result,msg){ if(!siete || siete.finished) return; siete.finished=true; const val=sieteValue(siete.player); let gained=0; if(result==='win'){ siete.streak++; gained=85+(val===7.5?35:Math.round(val*3))+siete.streak*8; siete.score+=gained; playSound('win'); } else if(result==='draw'){ gained=18; siete.score+=gained; playSound('point'); } else { siete.streak=0; gained=2; playSound('fail'); } $('sieteStatus').textContent=`${msg} +${gained} puntos.`; renderSiete(true); saveScore('sieteymedio', result==='loss'?gained:siete.score, result==='win'?'Victoria':result==='draw'?'Empate':'Consolación', {result}); }
+
+
+// SALAS ONLINE SIMPLES: BLACKJACK, SIETE Y MEDIO Y MENTIROSO
+function startSimpleRoomSync(kind){ clearSimpleRoomSync(); simpleRoomSyncTimer=setInterval(()=>syncSimpleRoom(kind), 1200); }
+async function syncSimpleRoom(kind){
+  const obj = kind==='blackjack'?blackjack:kind==='sieteymedio'?siete:liar;
+  if(!obj || obj.mode!=='room' || !cloudEnabled() || !cloudSessionToken()) return;
+  try{
+    const room = await window.PartidaRapidaSupabase.getRoom(cloudSessionToken(), obj.roomCode);
+    if(room?.ok){
+      if(kind==='blackjack') applyBlackjackRoomState(normalizeBlackjackRoomState(room.state));
+      if(kind==='sieteymedio') applySieteRoomState(normalizeSieteRoomState(room.state));
+      if(kind==='liar') applyLiarRoomState(normalizeLiarRoomState(room.state));
+    }
+  }catch(err){ console.warn('No se pudo sincronizar sala de cartas/dados.', err); }
+}
+async function updateSimpleRoom(kind,state,status){
+  const obj = kind==='blackjack'?blackjack:kind==='sieteymedio'?siete:liar;
+  if(!obj) return null;
+  return await window.PartidaRapidaSupabase.updateRoomState(cloudSessionToken(), obj.roomCode, state, status || state.status || 'playing');
+}
+async function resetSimpleRoomRound(kind){
+  const obj = kind==='blackjack'?blackjack:kind==='sieteymedio'?siete:liar;
+  if(!obj || obj.mode!=='room') return startGame(kind);
+  if(obj.role!=='host') return showModal(t('roomCode'), 'Solo el anfitrión puede iniciar una nueva mano o ronda.');
+  const state = kind==='blackjack' ? makeBlackjackRoomState() : kind==='sieteymedio' ? makeSieteRoomState() : makeLiarRoomState();
+  await updateSimpleRoom(kind,state,'playing');
+  if(kind==='blackjack') applyBlackjackRoomState(state);
+  if(kind==='sieteymedio') applySieteRoomState(state);
+  if(kind==='liar') applyLiarRoomState(state);
+}
+function currentRoomPlayerName(obj){ return obj?.role==='host' ? (obj.hostUsername || t('host')) : (obj.guestUsername || t('guest')); }
+function otherRoomPlayerName(obj){ return obj?.role==='host' ? (obj.guestUsername || t('guest')) : (obj.hostUsername || t('host')); }
+
+function makeBlackjackRoomState(){
+  const deck=makeFrenchDeck();
+  return {status:'playing',turn:'host',deck, dealer:[draw(deck),draw(deck)], hostHand:[draw(deck),draw(deck)], guestHand:[draw(deck),draw(deck)], hostDone:false, guestDone:false, winnerRole:null, result:null};
+}
+function normalizeBlackjackRoomState(st){ return st && Array.isArray(st.hostHand) ? st : makeBlackjackRoomState(); }
+function startBlackjackRoom(room, role){
+  stopAllGames(); setVisibleAvatars(); switchScreen('blackjack');
+  blackjack={mode:'room',role,roomCode:room.code,deck:[],player:[],dealer:[],score:0,hands:1,streak:0,finished:false,scoreSaved:false,hostUsername:room.host_username,guestUsername:room.guest_username};
+  const st=normalizeBlackjackRoomState(room.state);
+  if(role==='host' && (!room.state || !Array.isArray(room.state.hostHand))) updateSimpleRoom('blackjack',st,'playing').catch(console.warn);
+  applyBlackjackRoomState(st); startSimpleRoomSync('blackjack');
+}
+function applyBlackjackRoomState(st){
+  if(!blackjack || blackjack.mode!=='room') return;
+  blackjack.roomState=st; blackjack.finished=st.status==='finished'; blackjack.hands=1;
+  const mine = blackjack.role==='host' ? st.hostHand : st.guestHand;
+  blackjack.player = mine || []; blackjack.dealer = st.dealer || [];
+  const myDone = blackjack.role==='host' ? st.hostDone : st.guestDone;
+  const otherDone = blackjack.role==='host' ? st.guestDone : st.hostDone;
+  const myTurn = st.turn===blackjack.role && !myDone && st.status!=='finished';
+  $('blackjackScore').textContent=blackjack.score; $('blackjackHands').textContent=blackjack.hands; $('blackjackStreak').textContent=blackjack.streak;
+  $('blackjackPlayerValue').textContent=blackjackValue(mine||[]);
+  $('blackjackDealerValue').textContent=st.status==='finished'?blackjackValue(st.dealer||[]):'?';
+  $('blackjackPlayerHand').innerHTML=(mine||[]).map(c=>renderCard(c)).join('');
+  $('blackjackDealerHand').innerHTML=(st.dealer||[]).map((c,i)=>renderCard(c, st.status!=='finished' && i===1)).join('');
+  $('blackjackHitBtn').disabled=!myTurn; $('blackjackStandBtn').disabled=!myTurn;
+  const header=document.querySelector('#blackjackScreen .overline'); if(header) header.textContent='Blackjack online';
+  const hint=document.querySelector('#blackjackScreen .control-hint'); if(hint) hint.textContent='Sala online: cada jugador juega su mano por turnos contra la misma banca.';
+  if(st.status==='finished') return finishBlackjackRoomFromState(st);
+  $('blackjackStatus').textContent = myTurn ? 'Tu turno: pide carta o plántate.' : myDone ? `Esperando a ${otherRoomPlayerName(blackjack)}.` : `${otherRoomPlayerName(blackjack)} está jugando.`;
+}
+async function roomBlackjackHit(){
+  if(!blackjack?.roomState) return; const st={...blackjack.roomState, deck:[...blackjack.roomState.deck]}; if(st.turn!==blackjack.role || st.status==='finished') return;
+  const key=blackjack.role==='host'?'hostHand':'guestHand', doneKey=blackjack.role==='host'?'hostDone':'guestDone'; st[key]=[...(st[key]||[]), draw(st.deck)];
+  if(blackjackValue(st[key])>21){ st[doneKey]=true; advanceOrFinishBlackjackState(st); } else st.turn=blackjack.role;
+  await updateSimpleRoom('blackjack',st,st.status); applyBlackjackRoomState(st);
+}
+async function roomBlackjackStand(){
+  if(!blackjack?.roomState) return; const st={...blackjack.roomState, deck:[...blackjack.roomState.deck]}; if(st.turn!==blackjack.role || st.status==='finished') return;
+  const doneKey=blackjack.role==='host'?'hostDone':'guestDone'; st[doneKey]=true; advanceOrFinishBlackjackState(st);
+  await updateSimpleRoom('blackjack',st,st.status); applyBlackjackRoomState(st);
+}
+function advanceOrFinishBlackjackState(st){
+  if(!st.hostDone){ st.turn='host'; st.status='playing'; return; }
+  if(!st.guestDone){ st.turn='guest'; st.status='playing'; return; }
+  while(blackjackValue(st.dealer)<17) st.dealer.push(draw(st.deck));
+  st.status='finished'; st.turn=''; const hr=blackjackRoomResult(st.hostHand,st.dealer), gr=blackjackRoomResult(st.guestHand,st.dealer); st.hostResult=hr; st.guestResult=gr; st.winnerRole=hr.points>gr.points?'host':gr.points>hr.points?'guest':null;
+}
+function blackjackRoomResult(hand,dealer){ const pv=blackjackValue(hand||[]), dv=blackjackValue(dealer||[]); let result='draw', points=20; if(pv>21){result='loss'; points=2;} else if(dv>21 || pv>dv){result='win'; points=115+(pv===21?25:0);} else if(dv>pv){result='loss'; points=2;} return {result,points,value:pv}; }
+function finishBlackjackRoomFromState(st){
+  if(blackjack.scoreSaved) return; blackjack.scoreSaved=true; const r=blackjack.role==='host'?st.hostResult:st.guestResult; const won=r?.result==='win'; const draw=r?.result==='draw'; const points=r?.points||2; blackjack.score+=points; saveScore('blackjack',points, won?t('winDetail'):draw?t('draw'):t('consolationDetail'), {result:won?'win':draw?'draw':'loss', mode:'room'}); $('blackjackStatus').textContent=`${won?'Has ganado tu mano.':draw?'Empate.':'Has perdido tu mano.'} +${points} puntos.`; setTimeout(()=>showResultModal(won?t('winDetail'):draw?t('draw'):t('result'),`${won?'Has ganado la mano online.':draw?'Empate en la mano online.':'Has perdido la mano online.'} ${t('totalSaved',{points})}`,'blackjack-room'),500);
+}
+
+function makeSieteRoomState(){ const deck=makeSpanishDeck(); return {status:'playing',turn:'host',deck,dealer:[draw(deck)],hostHand:[draw(deck)],guestHand:[draw(deck)],hostDone:false,guestDone:false,winnerRole:null,result:null}; }
+function normalizeSieteRoomState(st){ return st && Array.isArray(st.hostHand) ? st : makeSieteRoomState(); }
+function startSieteRoom(room, role){ stopAllGames(); setVisibleAvatars(); switchScreen('sieteymedio'); siete={mode:'room',role,roomCode:room.code,deck:[],player:[],dealer:[],score:0,hands:1,streak:0,finished:false,scoreSaved:false,hostUsername:room.host_username,guestUsername:room.guest_username}; const st=normalizeSieteRoomState(room.state); if(role==='host' && (!room.state || !Array.isArray(room.state.hostHand))) updateSimpleRoom('sieteymedio',st,'playing').catch(console.warn); applySieteRoomState(st); startSimpleRoomSync('sieteymedio'); }
+function applySieteRoomState(st){ if(!siete || siete.mode!=='room') return; siete.roomState=st; siete.finished=st.status==='finished'; const mine=siete.role==='host'?st.hostHand:st.guestHand; siete.player=mine||[]; siete.dealer=st.dealer||[]; const myDone=siete.role==='host'?st.hostDone:st.guestDone; const myTurn=st.turn===siete.role && !myDone && st.status!=='finished'; $('sieteScore').textContent=siete.score; $('sieteHands').textContent=1; $('sieteStreak').textContent=siete.streak; $('sietePlayerValue').textContent=sieteValue(mine||[]).toString().replace('.5','½'); $('sieteDealerValue').textContent=st.status==='finished'?sieteValue(st.dealer||[]).toString().replace('.5','½'):'?'; $('sietePlayerHand').innerHTML=(mine||[]).map(c=>renderSpanishCard(c)).join(''); $('sieteDealerHand').innerHTML=(st.dealer||[]).map((c,i)=>renderSpanishCard(c,st.status!=='finished' && i>0)).join(''); $('sieteHitBtn').disabled=!myTurn; $('sieteStandBtn').disabled=!myTurn; const header=document.querySelector('#sieteymedioScreen .overline'); if(header) header.textContent='Siete y medio online'; const hint=document.querySelector('#sieteymedioScreen .control-hint'); if(hint) hint.textContent='Sala online: cada jugador juega su mano por turnos contra la misma banca.'; if(st.status==='finished') return finishSieteRoomFromState(st); $('sieteStatus').textContent=myTurn?'Tu turno: pide carta o plántate.':myDone?`Esperando a ${otherRoomPlayerName(siete)}.`:`${otherRoomPlayerName(siete)} está jugando.`; }
+async function roomSieteHit(){ if(!siete?.roomState) return; const st={...siete.roomState,deck:[...siete.roomState.deck]}; if(st.turn!==siete.role || st.status==='finished') return; const key=siete.role==='host'?'hostHand':'guestHand',doneKey=siete.role==='host'?'hostDone':'guestDone'; st[key]=[...(st[key]||[]), draw(st.deck)]; if(sieteValue(st[key])>7.5){ st[doneKey]=true; advanceOrFinishSieteState(st); } else st.turn=siete.role; await updateSimpleRoom('sieteymedio',st,st.status); applySieteRoomState(st); }
+async function roomSieteStand(){ if(!siete?.roomState) return; const st={...siete.roomState,deck:[...siete.roomState.deck]}; if(st.turn!==siete.role || st.status==='finished') return; const doneKey=siete.role==='host'?'hostDone':'guestDone'; st[doneKey]=true; advanceOrFinishSieteState(st); await updateSimpleRoom('sieteymedio',st,st.status); applySieteRoomState(st); }
+function advanceOrFinishSieteState(st){ if(!st.hostDone){st.turn='host';st.status='playing';return;} if(!st.guestDone){st.turn='guest';st.status='playing';return;} const maxTarget=Math.max(sieteValue(st.hostHand)<=7.5?sieteValue(st.hostHand):0,sieteValue(st.guestHand)<=7.5?sieteValue(st.guestHand):0); while(sieteValue(st.dealer)<5.5 && sieteValue(st.dealer)<=maxTarget) st.dealer.push(draw(st.deck)); st.status='finished';st.turn=''; const hr=sieteRoomResult(st.hostHand,st.dealer), gr=sieteRoomResult(st.guestHand,st.dealer); st.hostResult=hr;st.guestResult=gr;st.winnerRole=hr.points>gr.points?'host':gr.points>hr.points?'guest':null; }
+function sieteRoomResult(hand,dealer){ const pv=sieteValue(hand||[]), dv=sieteValue(dealer||[]); let result='draw',points=18; if(pv>7.5){result='loss';points=2;} else if(dv>7.5 || pv>dv){result='win';points=120+(pv===7.5?35:Math.round(pv*3));} else if(dv>pv){result='loss';points=2;} return {result,points,value:pv}; }
+function finishSieteRoomFromState(st){ if(siete.scoreSaved) return; siete.scoreSaved=true; const r=siete.role==='host'?st.hostResult:st.guestResult; const won=r?.result==='win', draw=r?.result==='draw', points=r?.points||2; siete.score+=points; saveScore('sieteymedio',points,won?t('winDetail'):draw?t('draw'):t('consolationDetail'),{result:won?'win':draw?'draw':'loss',mode:'room'}); $('sieteStatus').textContent=`${won?'Has ganado tu mano.':draw?'Empate.':'Has perdido tu mano.'} +${points} puntos.`; setTimeout(()=>showResultModal(won?t('winDetail'):draw?t('draw'):t('result'),`${won?'Has ganado la mano online.':draw?'Empate en la mano online.':'Has perdido la mano online.'} ${t('totalSaved',{points})}`,'sieteymedio-room'),500); }
+
+function makeLiarRoomState(){ return {status:'playing',turn:'host',hostDice:rollDice(),guestDice:rollDice(),bid:null,winnerRole:null,result:null}; }
+function normalizeLiarRoomState(st){ return st && Array.isArray(st.hostDice) ? st : makeLiarRoomState(); }
+function startLiarRoom(room, role){ stopAllGames(); setVisibleAvatars(); switchScreen('liar'); liar={mode:'room',role,roomCode:room.code,score:0,round:1,wins:0,player:[],cpu:[],bid:null,turn:role,finished:false,scoreSaved:false,hostUsername:room.host_username,guestUsername:room.guest_username}; fillLiarSelects(); const st=normalizeLiarRoomState(room.state); if(role==='host' && (!room.state || !Array.isArray(room.state.hostDice))) updateSimpleRoom('liar',st,'playing').catch(console.warn); applyLiarRoomState(st); startSimpleRoomSync('liar'); }
+function applyLiarRoomState(st){ if(!liar || liar.mode!=='room') return; liar.roomState=st; liar.finished=st.status==='finished'; liar.bid=st.bid; liar.turn=st.turn; liar.player=liar.role==='host'?st.hostDice:st.guestDice; liar.cpu=liar.role==='host'?st.guestDice:st.hostDice; $('liarScore').textContent=liar.score; $('liarRound').textContent=liar.round; $('liarWins').textContent=liar.wins; $('liarPlayerDice').innerHTML=(liar.player||[]).map(d=>`<span class="die">${dieFace(d)}</span>`).join(''); $('liarCpuDice').innerHTML=(liar.cpu||[]).map(d=>`<span class="die ${st.status==='finished'?'':'back'}">${st.status==='finished'?dieFace(d):'?'}</span>`).join(''); $('liarBid').textContent=st.bid?`${st.bid.qty} dados de ${st.bid.face}`:'-'; const myTurn=st.turn===liar.role && st.status!=='finished'; $('liarBidBtn').disabled=!myTurn; $('liarChallengeBtn').disabled=!myTurn || !st.bid; const header=document.querySelector('#liarScreen .overline'); if(header) header.textContent='Mentiroso online'; const oppTitle=document.querySelector('#liarScreen .dice-table .hand-block:nth-child(2) .hand-title'); if(oppTitle) oppTitle.textContent=`Dados de ${otherRoomPlayerName(liar)}`; if(st.status==='finished') return finishLiarRoomFromState(st); $('liarStatus').textContent=myTurn?(st.bid?'Tu turno: sube la apuesta o acusa de mentiroso.':'Tu turno: haz la primera apuesta.'):`Turno de ${otherRoomPlayerName(liar)}.`; }
+function countRoomDice(st,face){ return [...(st.hostDice||[]),...(st.guestDice||[])].filter(d=>d===face).length; }
+async function roomLiarBid(){ if(!liar?.roomState) return; const st={...liar.roomState}; if(st.turn!==liar.role || st.status==='finished') return; const qty=Number($('liarQty').value), face=Number($('liarFace').value); const oldBid=liar.bid; const valid=!oldBid ? qty>=1 && face>=1 : qty>oldBid.qty || (qty===oldBid.qty && face>oldBid.face); if(!valid){ $('liarStatus').textContent='La apuesta debe superar la actual.'; return; } st.bid={qty,face,by:liar.role}; st.turn=liar.role==='host'?'guest':'host'; await updateSimpleRoom('liar',st,'playing'); applyLiarRoomState(st); }
+async function roomLiarChallenge(){ if(!liar?.roomState?.bid) return; const st={...liar.roomState}; if(st.turn!==liar.role || st.status==='finished') return; const real=countRoomDice(st,st.bid.face); const bidTrue=real>=st.bid.qty; const challengerWins=!bidTrue; const bidder=st.bid.by; const winnerRole=challengerWins?liar.role:bidder; st.status='finished'; st.winnerRole=winnerRole; st.real=real; st.result=winnerRole===liar.role?'win':'loss'; await updateSimpleRoom('liar',st,'finished'); applyLiarRoomState(st); }
+function finishLiarRoomFromState(st){ if(liar.scoreSaved) return; liar.scoreSaved=true; const won=st.winnerRole===liar.role; const points=won?120:2; if(won){liar.wins++; liar.score+=points;} saveScore('liar',points,won?t('winDetail'):t('consolationDetail'),{result:won?'win':'loss',mode:'room'}); $('liarStatus').textContent=`Había ${st.real ?? countRoomDice(st,st.bid?.face)} dados de ${st.bid?.face}. ${won?'Ganas la ronda.':'Pierdes la ronda.'} +${points} puntos.`; setTimeout(()=>showResultModal(won?t('winDetail'):t('result'),`${won?'Has ganado la ronda online.':'Has perdido la ronda online.'} ${t('totalSaved',{points})}`,'liar-room'),500); }
 
 function startLiar(){ stopAllGames(); setVisibleAvatars(); switchScreen('liar'); liar={score:0,round:0,wins:0,player:[],cpu:[],bid:null,turn:'player',finished:false}; fillLiarSelects(); newLiarRound(); }
 function fillLiarSelects(){ const q=$('liarQty'), f=$('liarFace'); if(q && !q.options.length){ for(let i=1;i<=10;i++) q.add(new Option(i,i)); } if(f && !f.options.length){ for(let i=1;i<=6;i++) f.add(new Option(i,i)); } }
 function rollDice(n=5){ return Array.from({length:n},()=>1+Math.floor(Math.random()*6)); }
-function newLiarRound(){ if(!liar) return startLiar(); liar.round++; liar.player=rollDice(); liar.cpu=rollDice(); liar.bid=null; liar.turn='player'; liar.finished=false; $('liarStatus').textContent='Haz una apuesta inicial sobre los 10 dados totales.'; renderLiar(false); }
+function newLiarRound(){ if(liar?.mode==='room') return resetSimpleRoomRound('liar'); if(!liar) return startLiar(); liar.round++; liar.player=rollDice(); liar.cpu=rollDice(); liar.bid=null; liar.turn='player'; liar.finished=false; $('liarStatus').textContent='Haz una apuesta inicial sobre los 10 dados totales.'; renderLiar(false); }
 function dieFace(n){ return ['','⚀','⚁','⚂','⚃','⚄','⚅'][n] || '⚀'; }
 function renderLiar(reveal=false){ if(!liar) return; $('liarScore').textContent=liar.score; $('liarRound').textContent=liar.round; $('liarWins').textContent=liar.wins; $('liarPlayerDice').innerHTML=liar.player.map(d=>`<span class="die">${dieFace(d)}</span>`).join(''); $('liarCpuDice').innerHTML=liar.cpu.map(d=>`<span class="die ${reveal?'':'back'}">${reveal?dieFace(d):'?'}</span>`).join(''); $('liarBid').textContent=liar.bid?`${liar.bid.qty} dados de ${liar.bid.face}`:'-'; $('liarBidBtn').disabled=liar.finished || liar.turn!=='player'; $('liarChallengeBtn').disabled=liar.finished || liar.turn!=='player' || !liar.bid; }
 function validLiarBid(qty, face){ if(!liar.bid) return qty>=1 && face>=1; return qty>liar.bid.qty || (qty===liar.bid.qty && face>liar.bid.face); }
-function playerLiarBid(){ if(!liar || liar.finished || liar.turn!=='player') return; const qty=Number($('liarQty').value), face=Number($('liarFace').value); if(!validLiarBid(qty,face)){ $('liarStatus').textContent='La apuesta debe superar la actual.'; return; } liar.bid={qty,face,by:'player'}; liar.turn='cpu'; $('liarStatus').textContent=`Has apostado ${qty} dados de ${face}. La CPU piensa...`; renderLiar(false); setTimeout(cpuLiarTurn,650); }
+function playerLiarBid(){ if(liar?.mode==='room') return roomLiarBid(); if(!liar || liar.finished || liar.turn!=='player') return; const qty=Number($('liarQty').value), face=Number($('liarFace').value); if(!validLiarBid(qty,face)){ $('liarStatus').textContent='La apuesta debe superar la actual.'; return; } liar.bid={qty,face,by:'player'}; liar.turn='cpu'; $('liarStatus').textContent=`Has apostado ${qty} dados de ${face}. La CPU piensa...`; renderLiar(false); setTimeout(cpuLiarTurn,650); }
 function countDice(face){ return [...liar.player,...liar.cpu].filter(d=>d===face).length; }
 function cpuLiarTurn(){ if(!liar || liar.finished) return; const real=liar.bid?countDice(liar.bid.face):0; const shouldChallenge=liar.bid && (liar.bid.qty>real+1 || (liar.bid.qty>=7 && Math.random()<0.45)); if(shouldChallenge) return finishLiarChallenge('cpu'); let qty=liar.bid?liar.bid.qty:1, face=liar.bid?liar.bid.face:1; if(!liar.bid){ qty=1+Math.floor(Math.random()*2); face=liar.cpu[Math.floor(Math.random()*liar.cpu.length)]; } else if(face<6 && Math.random()<0.55){ face++; } else { qty++; if(qty>10) return finishLiarChallenge('cpu'); } liar.bid={qty,face,by:'cpu'}; liar.turn='player'; $('liarStatus').textContent=`La CPU sube a ${qty} dados de ${face}. Sube o acusa de mentiroso.`; renderLiar(false); }
-function playerLiarChallenge(){ if(!liar || liar.finished || !liar.bid) return finishLiarChallenge('player'); }
+function playerLiarChallenge(){ if(liar?.mode==='room') return roomLiarChallenge(); if(!liar || liar.finished || !liar.bid) return finishLiarChallenge('player'); }
 function finishLiarChallenge(challenger){ const real=countDice(liar.bid.face); const bidder=liar.bid.by; const bidTrue=real>=liar.bid.qty; const challengerWins=!bidTrue; const playerWins=(challenger==='player' && challengerWins) || (bidder==='player' && bidTrue); liar.finished=true; let gained=2; if(playerWins){ liar.wins++; gained=95+liar.wins*12; liar.score+=gained; playSound('win'); } else { playSound('fail'); } $('liarStatus').textContent=`Había ${real} dados de ${liar.bid.face}. ${playerWins?'Ganas la ronda.':'Pierdes la ronda.'} +${gained} puntos.`; renderLiar(true); saveScore('liar', playerWins?liar.score:gained, playerWins?'Victoria':'Consolación', {result:playerWins?'win':'loss'}); }
 
 
